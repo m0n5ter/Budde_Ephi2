@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7150B8D7-BD11-4283-A2AD-BD92E9ED5CBC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>BusinessLogic</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.0.5</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>PharmaProject</RootNamespace>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Rfc1006LibNet.Advanced">
+      <HintPath>C:\_Work\Budde\_Clients\Ephi\src\Shared\Rfc1006LibNet.Advanced.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entry.cs" />
+    <Compile Include="Wms_Communication\WmsCommunicator.cs" />
+    <Compile Include="Wms_Communication\Messages\Acknowledgement.cs" />
+    <Compile Include="Wms_Communication\Messages\AnforderungPackmittel.cs" />
+    <Compile Include="Wms_Communication\Messages\AnmeldungLabeldruck.cs" />
+    <Compile Include="Wms_Communication\Messages\AnmeldungPackstück.cs" />
+    <Compile Include="Wms_Communication\Messages\AnweisungPackstück.cs" />
+    <Compile Include="Wms_Communication\Messages\AufbringenLabel.cs" />
+    <Compile Include="Wms_Communication\Messages\BaseMessage.cs" />
+    <Compile Include="Wms_Communication\Messages\FehlerLabeldruck.cs" />
+    <Compile Include="Wms_Communication\Messages\LabeldruckErfolgreich.cs" />
+    <Compile Include="Wms_Communication\Messages\RückmeldungPackstück.cs" />
+    <Compile Include="Wms_Communication\Messages\Störvektor.cs" />
+    <Compile Include="UTC\CSD_PinsAndScripts.cs" />
+    <Compile Include="UTC\CSD_UTC.cs" />
+    <Compile Include="UTC\LabelPressUTC.cs" />
+    <Compile Include="Misc\Route.cs" />
+    <Compile Include="Misc\START.cs" />
+    <Compile Include="Misc\DESTINATION.cs" />
+    <Compile Include="Misc\WMS_TOTE_DIRECTION.cs" />
+    <Compile Include="Misc\TABLE_POSITION.cs" />
+    <Compile Include="Misc\MOTOR_DIR.cs" />
+    <Compile Include="Misc\SEGMENT_STATE.cs" />
+    <Compile Include="Misc\INFEED_STATE.cs" />
+    <Compile Include="Misc\FUNCTION_CODES.cs" />
+    <Compile Include="Misc\PRINTING_STATE.cs" />
+    <Compile Include="Misc\APPLYING_STATE.cs" />
+    <Compile Include="Misc\PRINT_SEG_JOB_TYPE.cs" />
+    <Compile Include="Misc\Types.cs" />
+    <Compile Include="Segments\EmptyBoxInfeed.cs" />
+    <Compile Include="Segments\CSD.cs" />
+    <Compile Include="Segments\CSD_PostPrinting.cs" />
+    <Compile Include="Segments\CSD_PrePrinting.cs" />
+    <Compile Include="Segments\IPrintStationSegment.cs" />
+    <Compile Include="Segments\IPrintStationSegmentRx.cs" />
+    <Compile Include="Segments\IPrintStationSegmentTx.cs" />
+    <Compile Include="Segments\PackingStationIoSegment.cs" />
+    <Compile Include="Segments\PrintStationIoSegment.cs" />
+    <Compile Include="Segments\LongStrechAfterAcm.cs" />
+    <Compile Include="Segments\LongStretch.cs" />
+    <Compile Include="Segments\SharedSlopeControl.cs" />
+    <Compile Include="Locations\AutostoreEnterSlope.cs" />
+    <Compile Include="Locations\AutostoreLeaveSlope.cs" />
+    <Compile Include="Locations\AutostoreLocation.cs" />
+    <Compile Include="Locations\BaseLocation.cs" />
+    <Compile Include="Locations\LabelPrinterLocation.cs" />
+    <Compile Include="Locations\LabelPrinterRebound.cs" />
+    <Compile Include="Locations\MainTrackCrossingLocation_PblA.cs" />
+    <Compile Include="Locations\MainTrackCrossingLocation_Base.cs" />
+    <Compile Include="Locations\MainTrackCrossingLocation_PblB.cs" />
+    <Compile Include="Locations\PackingBelowLocation.cs" />
+    <Compile Include="Locations\PackingEnterSlopeLocation.cs" />
+    <Compile Include="Locations\PackingLeaveSlopeLocation.cs" />
+    <Compile Include="Locations\PackingLocation.cs" />
+    <Compile Include="Locations\PalletizingLocation.cs" />
+    <Compile Include="Locations\PblEndLocation.cs" />
+    <Compile Include="Locations\PblEndLocationWithExtension.cs" />
+    <Compile Include="Locations\PblHalfwayLocation.cs" />
+    <Compile Include="Locations\PblZoneLocation.cs" />
+    <Compile Include="Locations\Pbl_B_EnterMainLocation.cs" />
+    <Compile Include="Locations\PostPackingSlopeLocation.cs" />
+    <Compile Include="Locations\SmallStorageLocation.cs" />
+    <Compile Include="Locations\SmallStorageSublocation.cs" />
+    <Compile Include="Locations\StrapperLocation.cs" />
+    <Compile Include="Locations\WeighingZone_Enter.cs" />
+    <Compile Include="Locations\WeighingZone_Leave.cs" />
+    <Compile Include="Devices\BarcodeScanner.cs" />
+    <Compile Include="Devices\LabelPrinter.cs" />
+    <Compile Include="Devices\NdwConnectCommunicator.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="log4net">
+      <Version>2.0.15</Version>
+    </PackageReference>
+    <PackageReference Include="M2Mqtt">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EphiLib\EphiLib.csproj">
+      <Project>{86E5E940-28FB-4A57-A28B-EBD4DD1FE3B7}</Project>
+      <Name>EphiLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

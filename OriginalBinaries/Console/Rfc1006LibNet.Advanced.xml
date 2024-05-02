@@ -1,0 +1,1937 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>Rfc1006LibNet.Advanced</name>
+  </assembly>
+  <members>
+    <member name="T:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs">
+      <summary>
+            Provides data for the 
+            <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Connected" />, <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Connecting" />, 
+            <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Client.Disconnected" />, <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Client.Disconnecting" /><see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Starting" />, <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Started" />, 
+            <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Stopping" />, <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Stopped" /> events.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs.#ctor(Rfc1006LibNet.Advanced.Rfc1006Base,System.Boolean,Rfc1006LibNet.Advanced.Rfc1006IPEndPoint)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs" /> class
+            using the specified <paramref name="source" />, 
+            <paramref name="handled" /> and <paramref name="endPoint" /> information.
+            </summary>
+      <param name="source">A reference to the object that raised the event.</param>
+      <param name="handled">A value that indicates the present state of the event
+            handling for the specific connection event as it travels the route.</param>
+      <param name="endPoint">The endPoint of the service.</param>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs.EndPoint">
+      <summary>
+            Gets or sets a network endpoint as an IP address, port number, 
+            destination TSAP and a source TSAP.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs.Handled">
+      <summary>
+            Gets or sets a value indicating whether the present state of the event handling 
+            for the specific connection event as it travels the route.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs.OrginalSource">
+      <summary>
+            Gets the original reporting source as determined by pure hit testing, 
+            before any possible <see cref="P:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs.Source" /> adjustment by a parent class.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs.Source">
+      <summary>
+            Gets or sets a reference to the object that raised the event. 
+            </summary>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs">
+      <summary>
+            Provides data for the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.StatusChanged" /> event.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.#ctor(Rfc1006LibNet.Advanced.Rfc1006Base,System.Exception,Rfc1006LibNet.Advanced.Rfc1006Status,Rfc1006LibNet.Advanced.Rfc1006Status)">
+      <summary>
+            Initializes a new instance 
+            of the <see cref="T:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs" /> class using the specified
+            <paramref name="source" />, <paramref name="exception" /> information.
+            </summary>
+      <param name="source">Stores a reference to the object that raised the event.</param>
+      <param name="exception">Stores the error that occurred 
+            during the RFC1006 communication.</param>
+      <param name="oldStatus">The old status of the connection.</param>
+      <param name="newStatus">The new status of the connection.</param>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.Exception">
+      <summary>
+            Gets the error that was occurred during the RFC1006 communication.
+            </summary>
+      <value>The <see cref="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.Exception" /> associated with the event.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.Status">
+      <summary>
+            Gets the actual status of the connection.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.PreviousStatus">
+      <summary>
+            Gets the previous status of the connection.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.OrginalSource">
+      <summary>
+            Gets the original reporting source as determined by pure hit testing, 
+            before any possible <see cref="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.Source" /> adjustment by a parent class.
+            </summary>
+      <value>
+      </value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.StatusChangedEventArgs.Source">
+      <summary>
+            Gets or sets a reference to the object that raised the event.
+            </summary>
+      <value>
+      </value>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs">
+      <summary>
+            Provides data for the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Timeout" /> event.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs.#ctor(Rfc1006LibNet.Advanced.Rfc1006Base,System.Exception)">
+      <summary>
+            Initializes a new instance 
+            of the <see cref="T:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs" /> class using the specified
+            <paramref name="source" />, <paramref name="exception" /> information.
+            </summary>
+      <param name="source">Stores a reference to the object that raised the event.</param>
+      <param name="exception">Stores the error that occurred 
+            during the RFC1006 communication.</param>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs.Exception">
+      <summary>
+            Gets the error that was occurred during the RFC1006 communication.
+            </summary>
+      <value>The <see cref="P:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs.Exception" /> associated with the event.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs.OrginalSource">
+      <summary>
+            Gets the original reporting source as determined by pure hit testing, 
+            before any possible <see cref="P:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs.Source" /> adjustment by a parent class.
+            </summary>
+      <value>
+      </value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs.Source">
+      <summary>
+            Gets or sets a reference to the object that raised the event.
+            </summary>
+      <value>
+      </value>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs">
+      <summary>
+            Provides data for the 
+            <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Receiving" />, <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Received" />, 
+            <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Transmitting" />, <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Transmitted" /> events.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.#ctor(Rfc1006LibNet.Advanced.Rfc1006Base,System.Boolean,System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs" /> class
+            using the specified <paramref name="source" />, 
+            <paramref name="handled" />, <paramref name="buffer" />,
+            <paramref name="bufferLength" /> information.
+            </summary>
+      <param name="source">A reference to the object that raised the event.</param>
+      <param name="handled">A value that indicates the present state of 
+            the event handling for the specific transfer event as it travels the route.</param>
+      <param name="buffer">An array of type Byte that is the location in memory 
+            to store data read from the RFC1006 communication.</param>
+      <param name="bufferLength">Stores the number of bytes read 
+            from the RFC1006 communication.</param>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.Buffer">
+      <summary>
+            Gets or sets an array of type Byte that is the location in memory 
+            to store data read from the RFC1006 communication
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.BufferLength">
+      <summary>
+            Gets or sets the number of bytes read from the RFC1006 communication.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.Handled">
+      <summary>
+            Gets or sets a value indicating whether the present state of the event handling 
+            for the specific transfer event as it travels the route.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.OrginalSource">
+      <summary>
+            Gets the original reporting source as determined by pure hit testing, 
+            before any possible <see cref="P:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.Source" /> adjustment by a parent class.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs.Source">
+      <summary>
+            Gets or sets a reference to the object that raised the event.
+            </summary>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.Licenser">
+      <summary>
+            Defines mechanism required to register the whole RFC 1006 LIB .NET.
+            </summary>
+      <remarks>It is recommended to set the <see cref="P:Rfc1006LibNet.Advanced.Licenser.LicenseKey" /> in the main entry point of
+            the application. If there is no entry point available set the <see cref="P:Rfc1006LibNet.Advanced.Licenser.LicenseKey" />
+            property before the first use of the assembly.</remarks>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Licenser.LicenseInfo">
+      <summary>
+            Gets the license conditions used for RFC 1006 development.
+            </summary>
+      <value>An instance representing the license conditions for RFC 1006
+            development.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Licenser.LicenseKey">
+      <summary>
+            Gets or sets the license key used to license this product.
+            </summary>
+      <value>A string value representing the license key used to license this
+            product.</value>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.FailIfEvaluation">
+      <summary>
+            Emits an error message upon evaluation license conditions.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.FailIfExpired">
+      <summary>
+            Emits an error message upon expired license conditions.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.FailIfSupportExpired">
+      <summary>
+            Emits an error message upon expired support license conditions.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.FailIfUnlicensed">
+      <summary>
+            Emits an error message upon non-productive license conditions.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.ThrowIfEvaluation">
+      <summary>
+            Throws an exception in case of an evaluation license.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.ThrowIfExpired">
+      <summary>
+            Throws an exception in case of an expired license.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.ThrowIfSupportExpired">
+      <summary>
+            Throws an exception in case of a supported expired license.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Licenser.ThrowIfUnlicensed">
+      <summary>
+            Throws an exception in case of a non-productive license.
+            </summary>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint">
+      <summary>
+            Represents a network endpoint as an IP address, port number, remote TSAP and a local TSAP.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort">
+      <summary>
+            Stores the default port number associated with the address.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.TsapEncoding">
+      <summary>
+            Stores the <see cref="T:System.Text.Encoding" /> used for encoding and decoding TSAP strings.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteTSAP" /> and
+            <paramref name="localTSAP" /> information 
+            and the <see cref="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort" />.
+            </summary>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteTSAP" /> and
+            <paramref name="localTSAP" /> information 
+            and the <see cref="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort" />.
+            </summary>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.String,System.String,System.String,System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> and
+            <paramref name="localTSAP" /> information 
+            and the <see cref="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort" />.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.String,System.Byte[],System.Byte[],System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> and
+            <paramref name="localTSAP" /> information 
+            and the <see cref="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort" />.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Net.IPAddress,System.String,System.String,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> and
+            <paramref name="localTSAP" /> information 
+            and the <see cref="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort" />.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Net.IPAddress,System.Byte[],System.Byte[],System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> and
+            <paramref name="localTSAP" /> information 
+            and the <see cref="F:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.DefaultPort" />.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Int32,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="port" />, <paramref name="localTSAP" /> 
+            and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Int32,System.String,System.String,System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="port" />, <paramref name="localTSAP" /> 
+            and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Int32,System.String,System.String,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="port" />, <paramref name="localTSAP" /> 
+            and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Int32,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="port" />, <paramref name="localTSAP" /> 
+            and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Int32,System.Byte[],System.Byte[],System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="port" />, <paramref name="localTSAP" /> 
+            and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Int32,System.Byte[],System.Byte[],System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="port" />, <paramref name="localTSAP" /> 
+            and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.String,System.Int32,System.String,System.String,System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="port" />,
+            <paramref name="localTSAP" /> and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.String,System.Int32,System.Byte[],System.Byte[],System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="port" />,
+            <paramref name="localTSAP" /> and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Net.IPAddress,System.Int32,System.String,System.String,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="port" />,
+            <paramref name="localTSAP" /> and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.#ctor(System.Net.IPAddress,System.Int32,System.Byte[],System.Byte[],System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            using the specified <paramref name="remoteIPAddress" />, <paramref name="port" />,
+            <paramref name="localTSAP" /> and <paramref name="remoteTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">An Internet Protocol (IP) address.</param>
+      <param name="port">The port number associated with the address</param>
+      <param name="remoteTSAP">The remote TSAP of the endpoint.</param>
+      <param name="localTSAP">The local TSAP of the endpoint.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.BindIPAddresses">
+      <summary>
+            Gets or sets an array of <see cref="T:System.Net.IPAddress" />es on which the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" />
+            should listen.
+            </summary>
+      <remarks>
+            If <c>null</c> or empty, the server will bind on <see cref="F:System.Net.IPAddress.Any" /> and
+            <see cref="F:System.Net.IPAddress.IPv6Any" />.
+            </remarks>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.ReceivedLocalTSAP">
+      <summary>
+            Gets or sets the local TSAP of the endpoint received from the partner.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.ReceivedRemoteTSAP">
+      <summary>
+            Gets or sets the remote TSAP of the endpoint received from the partner.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.LocalTSAP">
+      <summary>
+            Gets or sets the local TSAP of the endpoint.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.RemoteTSAP">
+      <summary>
+            Gets or sets the remote TSAP of the endpoint.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint.ToString">
+      <summary>
+            Returns the IP address, port number, remote TSAP and local TSAP
+            of the specified endpoint.
+            </summary>
+      <returns>The IP address, port number, remote TSAP and local TSAP
+            of the specified endpoint.</returns>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.Rfc1006Status">
+      <summary>
+            Represents the status of connection.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.ConnectionClosed">
+      <summary>
+            After the close
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.ConnectionClosing">
+      <summary>
+            Before the close
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Connected">
+      <summary>
+            After the connection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Connecting">
+      <summary>
+            Before the connection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Disconnected">
+      <summary>
+            After the disconnection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Disconnecting">
+      <summary>
+            Before the disconnection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Opened">
+      <summary>
+            After the open
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Opening">
+      <summary>
+            Before the open
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.RfcConnecting">
+      <summary>
+            Before the RFC connection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.RfcConnected">
+      <summary>
+            After the RFC connection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.TcpConnecting">
+      <summary>
+            Before the TCP connection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.TcpConnected">
+      <summary>
+            After the TCP connection
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Starting">
+      <summary>
+            Before the server start
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Started">
+      <summary>
+            After the server start
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Stopping">
+      <summary>
+            Before the server stop
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Status.Stopped">
+      <summary>
+            After the server stop
+            </summary>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.Rfc1006Base">
+      <summary>
+            Provides a generic interface to communicate via RFC1006.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Base.AliveInterval">
+      <summary>
+            Stores the interval in milliseconds 
+            when the client will send a type of broadcast.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultAliveTime">
+      <summary>
+            Stores the default value of the alive time.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultReceiveTimeout">
+      <summary>
+            Stores the default value of <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.ReceiveTimeout" /></summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultTransmitTimeout">
+      <summary>
+            Stores the default value of <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.TransmitTimeout" /></summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Base.TextEncoding">
+      <summary>
+            Stores the <see cref="T:System.Text.Encoding" /> used when transmitting or receiving
+            strings and for encoding TSAP values.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.#ctor">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Base" /> class.
+            </summary>
+      <exception cref="T:System.Net.Sockets.SocketException">Could not open socket.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Finalize">
+      <summary>
+            Finalizes an instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Base" /> class class.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Connected">
+      <summary>
+            Occurs before the connection.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Connecting">
+      <summary>
+            Occurs after the connection.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Receiving">
+      <summary>
+            Occurs before a receive.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Received">
+      <summary>
+            Occurs after a receive.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Timeout">
+      <summary>
+            Occurs when a timeout is appeared.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Transmitting">
+      <summary>
+            Occurs before a transmit.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.Transmitted">
+      <summary>
+            Occurs after a transmit.
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Base.StatusChanged">
+      <summary>
+            Occurs if something gone wrong during a transfer.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.FastAcknowlege">
+      <summary>
+            FastAcknowlege 
+            If partner is sending small packages in short intervals.
+            This makes the TCP-traffic faster
+            V 1.0.3.0
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.AliveTime">
+      <summary>
+            Gets or sets the time in milliseconds when the server will disconnect 
+            if the client is not responding
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.AutoReceive">
+      <summary>
+            Gets or sets a value indicating whether 
+            the receiving thread is turned on or off.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.EndPoint">
+      <summary>
+            Gets or sets a network endpoint as an IP address, port number, 
+            remote TSAP and a local TSAP.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.LocalId">
+      <summary>
+            Gets or sets the local ID of the RFC1006 communication.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.RemoteId">
+      <summary>
+            Gets or sets the remote ID of the RFC1006 communication.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.ReceiveTimeout">
+      <summary>
+            Gets or sets the time in milliseconds when the service will cancel the receive.
+            </summary>
+      <value>The default value of this property is defined by
+            <see cref="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultReceiveTimeout" />.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.TransmitTimeout">
+      <summary>
+            Gets or sets the time in milliseconds when the service will cancel the transmit.
+            </summary>
+      <value>The default value of this property is defined by
+            <see cref="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultTransmitTimeout" />.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.Status">
+      <summary>
+            Gets the status of the connection.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Base.Socket">
+      <summary>
+            Gets or sets the socket of the RFC1006 communication.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Connect">
+      <summary>
+            Wait onto connection to remote.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Connect(System.Int32)">
+      <summary>
+            Waits until a communication is connected 
+            or the <paramref name="timeout" /> exceeded.
+            </summary>
+      <param name="timeout">The timeout in milliseconds.</param>
+      <exception cref="T:System.TimeoutException">Connection not established!</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Start">
+      <summary>
+            Starts the communication.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Stop">
+      <summary>
+            Stops the communication.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Dispose">
+      <summary>
+            Releases all resources used by the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Base" /> class.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Receive">
+      <summary>
+            Reads a byte from the RFC1006 communication send by the opposite service.
+            </summary>
+      <returns>Data from the RFC1006 communication.</returns>
+      <exception cref="T:System.TimeoutException">
+            The <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.ReceiveTimeout" /> exceeded.</exception>
+      <exception cref="T:System.Exception">Connection not established!</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.ReceiveString">
+      <summary>
+            Reads a Rfc1006Packet from the RFC1006 communication 
+            send by the opposite service.
+            </summary>
+      <returns>Data from the RFC1006 communication.</returns>
+      <exception cref="T:System.TimeoutException">
+            The <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.ReceiveTimeout" /> exceeded.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Transmit(System.Byte[])">
+      <summary>
+            Writes the length of <paramref name="buffer" /> Bytes to the RFC1006 communication.
+            </summary>
+      <param name="buffer">An array of type Byte that contains the data 
+            to write to the RFC1006 communication.</param>
+      <returns>The number of bytes written to the RFC1006 communication.</returns>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="buffer" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.TimeoutException">
+            The transmit timeout exceeded.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Transmit(System.String)">
+      <summary>
+            Writes the length of <paramref name="buffer" /> Bytes to the RFC1006 communication.
+            </summary>
+      <param name="buffer">A String that contains the data 
+            to write to the RFC1006 communication.</param>
+      <returns>The number of bytes written to the RFC1006 communication.</returns>
+      <exception cref="T:System.TimeoutException">
+            The transmit timeout exceeded.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Transmit(System.Byte[],System.Int32)">
+      <summary>
+            Writes <paramref name="length" /> Bytes to the RFC1006 communication.
+            </summary>
+      <param name="buffer">An array of type Byte that contains the data 
+            to write to the RFC1006 communication.</param>
+      <param name="length">The number of bytes to write to the RFC1006 communication.</param>
+      <returns>The number of bytes written to the RFC1006 communication.</returns>
+      <exception cref="T:System.TimeoutException">
+            The transmit timeout exceeded.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Transmit(System.Byte[],System.Int32,System.Int32)">
+      <summary>
+            Writes <paramref name="length" /> Bytes to the RFC1006 communication.
+            </summary>
+      <param name="buffer">An array of type Byte that contains the data 
+            to write to the RFC1006 communication.</param>
+      <param name="offset">The offset of the buffer index.</param>
+      <param name="length">The number of bytes to write to the RFC1006 communication.</param>
+      <returns>The number of bytes written to the RFC1006 communication.</returns>
+      <exception cref="T:System.TimeoutException">
+            The transmit timeout exceeded.</exception>
+      <exception cref="T:System.Exception">Connection not established!</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.ToString">
+      <summary>
+            Returns a string that represents the current object.
+            </summary>
+      <returns>A string that represents the current object.</returns>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.NewId">
+      <summary>
+            Allocates a new id for the server or client.
+            </summary>
+      <returns>The id of the server or client.</returns>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.CloseSocket">
+      <summary>
+            CLoses the <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.Socket" /></summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.Dispose(System.Boolean)">
+      <summary>
+            Releases the unmanaged resources used by the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Base" /> class and
+            optionally releases the managed resources.
+            </summary>
+      <param name="disposing">The value true to release both managed and unmanaged
+            resources; otherwise the value false to release only unmanaged resources.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnConnected(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Connected" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnConnecting(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Connecting" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnReceived(Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Received" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnReceiving(Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Receiving" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnTimeout(Rfc1006LibNet.Advanced.EventArgs.TimeoutEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Timeout" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnTransmitted(Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Transmitted" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.OnTransmitting(Rfc1006LibNet.Advanced.EventArgs.TransferEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Base.Transmitting" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.SetKeepAlive(System.Int32)">
+      <summary>
+            Sets the keep alive time using the specified <paramref name="aliveTime" />
+            and <pararef name="aliveTime" /> information.
+            </summary>
+      <param name="aliveTime">The time in milliseconds after 
+            the connection will be closed</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.SetStatus(Rfc1006LibNet.Advanced.Rfc1006Status,Rfc1006LibNet.Advanced.Rfc1006Base)">
+      <summary>
+            Sets the status of the connection using the specified
+            <paramref name="value" />, <paramref name="sender" /> information.
+            </summary>
+      <param name="value">Represents the new status.</param>
+      <param name="sender">A reference to the object that raised the event.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Base.SetStatus(Rfc1006LibNet.Advanced.Rfc1006Status,Rfc1006LibNet.Advanced.Rfc1006Base,System.Exception)">
+      <summary>
+            Sets the status of the connection using the specified
+            <paramref name="value" />, <paramref name="sender" /> and
+            <paramref name="exception" /> information.
+            </summary>
+      <param name="value">Represents the new status.</param>
+      <param name="sender">A reference to the object that raised the event.</param>
+      <param name="exception">The exception prompt the new status.</param>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.Rfc1006Client">
+      <summary>
+            Defines an implementation of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Base" /> class to provide a generic
+            interface to communicate via RFC1006 from a client perspective with any RFC1006 server.
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Client.DefaultConnectionTimeout">
+      <summary>
+            Stores the default connection timeout in milliseconds (5s).
+            </summary>
+    </member>
+    <member name="F:Rfc1006LibNet.Advanced.Rfc1006Client.DefaultReconnectionInterval">
+      <summary>
+            Stores the default reconnection interval in milliseconds (1s).
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.Int32,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.Int32,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.Int32,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="address">To identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.Int32,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="port" />, <paramref name="remoteTSAP" /> and 
+            <paramref name="localTSAP" /> information 
+            and <see cref="F:Rfc1006LibNet.Advanced.Rfc1006Client.DefaultConnectionTimeout" />.
+            </summary>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(Rfc1006LibNet.Advanced.Rfc1006IPEndPoint)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class 
+            using the specified <paramref name="endPoint" /> information.
+            </summary>
+      <param name="endPoint">The <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            to use to identifier the server</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.Int32,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Net.IPAddress,System.Int32,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.Int32,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="address">To identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.String,System.Int32,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="port" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information 
+            and <see cref="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultAliveTime" />.
+            </summary>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(Rfc1006LibNet.Advanced.Rfc1006IPEndPoint,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class 
+            using the specified <paramref name="endPoint" /> and 
+            <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="endPoint">The <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            to use to identifier the server</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.Int32,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.Int32,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.Int32,System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.Int32,System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="port" />, <paramref name="remoteTSAP" />,
+            <paramref name="localTSAP" /> and <paramref name="connectionTimeout" /> information 
+            and <see cref="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultAliveTime" />.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,Rfc1006LibNet.Advanced.Rfc1006IPEndPoint)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class 
+            using the specified <paramref name="endPoint" /> and  
+            <paramref name="connectionTimeout" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="endPoint">The <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            to use to identifier the server</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.Int32,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.Net.IPAddress,System.Int32,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">The <see cref="T:System.Net.IPAddress" />
+            to use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.Int32,System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="remoteTSAP" />, <paramref name="connectionTimeout" />,
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,System.String,System.Int32,System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class using the specified
+            <paramref name="address" />, <paramref name="port" />, <paramref name="remoteTSAP" />, 
+            <paramref name="connectionTimeout" />, <paramref name="localTSAP" /> and 
+            <paramref name="aliveTime" /> information 
+            and <see cref="F:Rfc1006LibNet.Advanced.Rfc1006Base.DefaultAliveTime" />.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="address">To use to identifier the server IP.</param>
+      <param name="port">To use to identifier the server port</param>
+      <param name="remoteTSAP">To use to identifier the server TSAP.</param>
+      <param name="localTSAP">To use to identifier the client TSAP.</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="address" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.#ctor(System.Int32,Rfc1006LibNet.Advanced.Rfc1006IPEndPoint,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class 
+            using the specified <paramref name="endPoint" />, <paramref name="connectionTimeout" /> and 
+            <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="connectionTimeout">The time in milliseconds after 
+            the connection will be closed</param>
+      <param name="endPoint">The <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            to use to identifier the server</param>
+      <param name="aliveTime">The timeout in milliseconds</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The
+            <paramref name="aliveTime" /> is lower than zero.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="connectionTimeout" />
+            is lower than zero.</exception>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Client.Disconnected">
+      <summary>
+            Occurs before the disconnection
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Client.Disconnecting">
+      <summary>
+            Occurs after the disconnection
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Client.AutoReconnect">
+      <summary>
+            Gets or sets a value indicating whether the automatic reconnection is enabled or not.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Client.ConnectionTimeout">
+      <summary>
+            Gets or sets the timeout of the connection in milliseconds.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.Rfc1006Client.ReconnectionInterval">
+      <summary>
+            Gets or sets the reconnection interval in milliseconds.
+            </summary>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+            The value is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.Connect">
+      <summary>
+            Connects the client to the server using the 
+            specified <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.AliveTime" /> and 
+            <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Client.ConnectionTimeout" /> information.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.Connect(System.Int32)">
+      <summary>
+            Connects the client to the server using the 
+            specified <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Base.AliveTime" /> and 
+            <see cref="P:Rfc1006LibNet.Advanced.Rfc1006Client.ConnectionTimeout" /> information
+            or the <paramref name="timeout" /> exceeded.
+            </summary>
+      <param name="timeout">The timeout in milliseconds.</param>
+      <exception cref="T:System.TimeoutException">Connection not established!</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.Start">
+      <summary>
+            Starts the connecting of the client to the server.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.Stop">
+      <summary>
+            Disconnects the client from the server.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.Dispose(System.Boolean)">
+      <summary>
+            Releases the unmanaged resource used by the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Client" /> class and
+            optionally releases the managed resource.
+            </summary>
+      <param name="disposing">The value true to release both managed and unmanaged
+            resource; otherwise the value false to release only unmanaged resource.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.OnDisconnected(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Client.Disconnected" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Client.OnDisconnecting(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Client.Disconnecting" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.Rfc1006Server">
+      <summary>
+            Defines an implementation of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Base" /> class to provide a generic
+            interface to communicate via RFC1006 from a Server perspective with any RFC1006 client.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(Rfc1006LibNet.Advanced.Rfc1006IPEndPoint)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="endPoint" /> information.
+            </summary>
+      <param name="endPoint">The <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            to use to identifier the client</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(Rfc1006LibNet.Advanced.Rfc1006IPEndPoint,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="endPoint" /> information.
+            </summary>
+      <param name="endPoint">The <see cref="T:Rfc1006LibNet.Advanced.Rfc1006IPEndPoint" /> class 
+            to use to identifier the client</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Byte[],System.Byte[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteTSAP" /> and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.String,System.String)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteTSAP" /> and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Net.IPAddress,System.String,System.String,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> 
+            and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.String,System.String,System.String,System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> 
+            and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Net.IPEndPoint,System.Byte[],System.Byte[],System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="endPoint" />, <paramref name="remoteTSAP" /> 
+            and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="endPoint">The <see cref="T:System.Net.IPEndPoint" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Net.IPAddress,System.Byte[],System.Byte[],System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> 
+            and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.String,System.Byte[],System.Byte[],System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> 
+            and <paramref name="localTSAP" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Byte[],System.Byte[],System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteTSAP" />, and <paramref name="localTSAP" /> and 
+            <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.String,System.String,System.Int32)">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteTSAP" />, <paramref name="localTSAP" /> 
+            and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Net.IPAddress,System.String,System.String,System.Int32,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /> , 
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.String,System.String,System.String,System.Int32,System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" /><paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Net.IPEndPoint,System.Byte[],System.Byte[],System.Int32,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="endPoint" />, <paramref name="remoteTSAP" />, 
+            <paramref name="localTSAP" /> and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="endPoint">The <see cref="T:System.Net.IPEndPoint" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="endPoint" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.Net.IPAddress,System.Byte[],System.Byte[],System.Int32,System.Net.IPAddress[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" />, <paramref name="localTSAP" />
+            and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.#ctor(System.String,System.Byte[],System.Byte[],System.Int32,System.String[])">
+      <summary>
+            Initializes a new instance of the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class using the specified
+            <paramref name="remoteIPAddress" />, <paramref name="remoteTSAP" />, <paramref name="localTSAP" /> 
+            and <paramref name="aliveTime" /> information.
+            </summary>
+      <param name="remoteIPAddress">The <see cref="T:System.Net.IPAddress" /> 
+            to use to identifier the client IP.</param>
+      <param name="remoteTSAP">To use to identifier the client TSAP.</param>
+      <param name="localTSAP">To use to identifier the server TSAP.</param>
+      <param name="aliveTime">Stores the time in milliseconds when the server will disconnect 
+            if the client is not responding</param>
+      <param name="bindIPAddresses">An optional array of IP addresses on which to bind.</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="remoteIPAddress" /> is a null
+            reference (Nothing in Visual Basic).</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">The <pararef name="aliveTime" />
+            is lower than zero.</exception>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Server.Starting">
+      <summary>
+            Occurs before the server starts
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Server.Started">
+      <summary>
+            Occurs after the server starts
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Server.Stopping">
+      <summary>
+            Occurs before the server stops
+            </summary>
+    </member>
+    <member name="E:Rfc1006LibNet.Advanced.Rfc1006Server.Stopped">
+      <summary>
+            Occurs after the server stops
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.StopAll">
+      <summary>
+            Stops all currently active servers and disconnect the clients.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.Connect">
+      <summary>
+            Waits until a client is connected.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.Connect(System.Int32)">
+      <summary>
+            Waits until a client is connected 
+            or the <paramref name="timeout" /> exceeded.
+            </summary>
+      <param name="timeout">The timeout in milliseconds.</param>
+      <exception cref="T:System.TimeoutException">Connection not established!</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.Start">
+      <summary>
+            Starts the server and accept client.
+            </summary>
+      <exception cref="T:System.Exception">Server already started</exception>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.Stop">
+      <summary>
+            Stops the server and disconnect client.
+            </summary>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.Dispose(System.Boolean)">
+      <summary>
+            Releases the unmanaged resources used by the <see cref="T:Rfc1006LibNet.Advanced.Rfc1006Server" /> class and
+            optionally releases the managed resources.
+            </summary>
+      <param name="disposing">The value true to release both managed and unmanaged
+            resources; otherwise the value false to release only unmanaged resources.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.OnStarted(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Started" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.OnStarting(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Starting" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.OnStopped(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Stopped" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="M:Rfc1006LibNet.Advanced.Rfc1006Server.OnStopping(Rfc1006LibNet.Advanced.EventArgs.ConnectionEventArgs)">
+      <summary>
+            Raises the <see cref="E:Rfc1006LibNet.Advanced.Rfc1006Server.Stopping" /> event using the specified event data.
+            </summary>
+      <param name="e">The event data.</param>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.ILicenseInfo">
+      <summary>
+            Provides the license conditions of a single license.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseInfo.ExpiryDate">
+      <summary>
+            Gets the date after which the license expires.
+            </summary>
+      <value>The <see cref="T:System.DateTime" /> after which the license expires or a null reference
+            (Nothing in Visual Basic) in the case there the license never expires.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseInfo.SupportExpiryDate">
+      <summary>
+            Gets the date until that the license is supported by newer versions of the product.
+            </summary>
+      <value>The <see cref="T:System.DateTime" /> that the license is supported by newer versions of
+            the product or a null reference (Nothing in Visual Basic) in the case there the
+            license support is unlimited.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseInfo.IsEvaluation">
+      <summary>
+            Gets a value indicating whether the license can be used for evaluation purpose.
+            </summary>
+      <value>The value true if the license can be used for evaluation purpose; otherwise the
+            value false.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseInfo.IsExpired">
+      <summary>
+            Gets a value indicating whether the license is expired and is therefore not
+            longer valid.
+            </summary>
+      <value>The value true if the license is expired and is therefore not longer valid;
+            otherwise the value false.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseInfo.IsSupportExpired">
+      <summary>
+            Gets a value indicating whether the support for this product release is expired.
+            </summary>
+      <value>The value true if the license support for this product release is expired;
+            otherwise the value false.</value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseInfo.Type">
+      <summary>
+            Gets type of license represented.
+            </summary>
+      <value>An instance representing the type of license.</value>
+    </member>
+    <member name="T:Rfc1006LibNet.Advanced.ILicenseType">
+      <summary>
+            Provides information about the kind of license that activates according features in the
+            product, depending on the type.
+            </summary>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseType.Name">
+      <summary>
+      </summary>
+      <value>
+      </value>
+    </member>
+    <member name="P:Rfc1006LibNet.Advanced.ILicenseType.Description">
+      <summary>
+      </summary>
+      <value>
+      </value>
+    </member>
+  </members>
+</doc>

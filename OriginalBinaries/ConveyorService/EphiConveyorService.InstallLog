@@ -1,0 +1,21 @@
+﻿Installing assembly 'D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.InstallLog
+   assemblypath = D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.exe
+Installing service PharmaConveyorDriver...
+Service PharmaConveyorDriver has been successfully installed.
+Creating EventLog source PharmaConveyorDriver in log Application...
+Committing assembly 'D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.InstallLog
+   assemblypath = D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.exe
+Uninstalling assembly 'D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.InstallLog
+   assemblypath = D:\Projects\Ephi\CSharp\Budde Pharma Project\Service\bin\Release\EphiConveyorService.exe
+Removing EventLog source PharmaConveyorDriver.
+Service PharmaConveyorDriver is being removed from the system...
+Service PharmaConveyorDriver was successfully removed from the system.
