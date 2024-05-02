@@ -7,7 +7,7 @@
     <ProjectGuid>{7150B8D7-BD11-4283-A2AD-BD92E9ED5CBC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>BusinessLogic</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <ApplicationVersion>1.0.0.5</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>PharmaProject</RootNamespace>
@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Rfc1006LibNet.Advanced">
-      <HintPath>C:\_Work\Budde\_Clients\Ephi\src\Shared\Rfc1006LibNet.Advanced.dll</HintPath>
+      <HintPath>..\ThirdParty\Rfc1006LibNet.Advanced.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -113,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="log4net">
-      <Version>2.0.15</Version>
+      <Version>2.0.17</Version>
     </PackageReference>
     <PackageReference Include="M2Mqtt">
       <Version>4.3.0</Version>

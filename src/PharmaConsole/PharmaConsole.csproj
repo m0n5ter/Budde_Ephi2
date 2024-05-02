@@ -7,7 +7,7 @@
     <ProjectGuid>{AFB38DDA-9D3C-4E88-BEAF-FF363DE1CEBF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AssemblyName>PharmaConsole</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>PharmaProject</RootNamespace>
@@ -33,15 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BusinessLogic">
-      <HintPath>..\BusinessLogic\bin\Debug\BusinessLogic.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
+      <Project>{7150b8d7-bd11-4283-a2ad-bd92e9ed5cbc}</Project>
+      <Name>BusinessLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EphiLib\EphiLib.csproj">
       <Project>{86E5E940-28FB-4A57-A28B-EBD4DD1FE3B7}</Project>
       <Name>EphiLib</Name>

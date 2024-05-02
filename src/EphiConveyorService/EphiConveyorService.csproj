@@ -7,7 +7,7 @@
     <ProjectGuid>{D5664132-06EE-42E3-B6CB-A2279C1DECDE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AssemblyName>EphiConveyorService</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <ApplicationVersion>2.0.1.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>PharmaProject.BusinessLogic.Service</RootNamespace>
@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="log4net">
-      <Version>2.0.15</Version>
+      <Version>2.0.17</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
