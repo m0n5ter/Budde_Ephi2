@@ -18,7 +18,7 @@ public class FileLayoutConverter : PatternLayoutConverter
         var source = loggingEvent.RenderedMessage.Replace("\r", "").Split('\n');
         if (loggingEvent.Level.Value < Level.Fatal.Value)
         {
-            var str1 = string.Format("  {0}, {1} ", loggingEvent.Level, loggingEvent.LoggerName);
+            var str1 = $"  {loggingEvent.Level}, {loggingEvent.LoggerName} ";
             var length = source.Length;
             var str2 = string.Join("\r\n    ", source).Trim();
             if (length < 2)

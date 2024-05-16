@@ -32,6 +32,6 @@ public class MeasurementResult
 
     public override string ToString()
     {
-        return string.Format("Measurement: Elapsed:{0}, fStart:{1}, fStop:{2}, Pauses:{3}", Elapsed, FlyingStart, FlyingStop, PauseCount);
+        return $"Measurement: Elapsed:{Elapsed}, fStart:{FlyingStart}, fStop:{FlyingStop}, Pauses:{PauseCount}";
     }
 }

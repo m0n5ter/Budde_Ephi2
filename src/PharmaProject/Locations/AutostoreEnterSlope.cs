@@ -38,8 +38,7 @@ namespace PharmaProject.Locations
                     return;
                 acmFull = value;
                 var canTransferChanged = SlopeControl.CanTransferChanged;
-                if (canTransferChanged != null)
-                    canTransferChanged();
+                canTransferChanged?.Invoke();
                 if (value)
                     return;
                 outUpstreamLoad.Deactivate();

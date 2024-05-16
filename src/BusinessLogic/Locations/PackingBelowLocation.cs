@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.PackingBelowLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using Ephi.Core.UTC;
+﻿using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
 using PharmaProject.BusinessLogic.Misc;
 
@@ -44,7 +38,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             get
             {
-                return new InPin[4]
+                return new[]
                 {
                     inBtn_LV,
                     inBtn_RV,
@@ -102,7 +96,7 @@ namespace PharmaProject.BusinessLogic.Locations
 
         private Conditional MakeEnterScript(InPin btn, OutPin load, string id)
         {
-            return MakeConditionalStatement(string.Format("Load ACM section {0} ", id), OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE, RUN_MODE.PERMANENTLY).AddLogicBlock(LOGIC_FUNCTION.AND)
+            return MakeConditionalStatement($"Load ACM section {id} ", OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE, RUN_MODE.PERMANENTLY).AddLogicBlock(LOGIC_FUNCTION.AND)
                 .AddCondition(btn, PIN_STATE.INACTIVE).AddGuardBlock(100U).AddGuardPin(btn).CloseBlock().CloseBlock().AddOutputState(load);
         }
 
@@ -110,7 +104,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csdNum != 2U)
                 return null;
+
             var scripts = GetScripts(csdNum);
+            
             return scripts == null
                 ? null
                 : MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.DispatchNormalSegmentOccupied, csdNum,
@@ -120,6 +116,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return scripts != null
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.DispatchNormalSegmentOccupied, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading)
@@ -152,6 +149,7 @@ namespace PharmaProject.BusinessLogic.Locations
                 case SEGMENT_STATE.IDLE:
                     var num1 = 2;
                     var num2 = (int)(csd1LastLoaded + 1);
+            
                     for (var index = num2; index < num2 + num1; ++index)
                         switch ((LOAD_DIRECTION)(index % num1))
                         {
@@ -159,19 +157,23 @@ namespace PharmaProject.BusinessLogic.Locations
                                 if (csd1_rightTrigger.Active)
                                     goto default;
                                 break;
+                    
                             case LOAD_DIRECTION.LEFT:
                                 if (!csd1_leftTrigger.Active)
                                     break;
                                 goto default;
+                            
                             default:
                                 LoadCsd1((LOAD_DIRECTION)(index % num1));
                                 return;
                         }
 
                     break;
+
                 case SEGMENT_STATE.OCCUPIED:
                     if (!csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
                         break;
+                
                     csd1.DispatchNormal();
                     break;
             }
@@ -184,6 +186,7 @@ namespace PharmaProject.BusinessLogic.Locations
                 case SEGMENT_STATE.IDLE:
                     var num1 = 3;
                     var num2 = (int)(csd2LastLoaded + 1);
+                    
                     for (var index = num2; index < num2 + num1; ++index)
                         switch (index % num1)
                         {
@@ -191,23 +194,28 @@ namespace PharmaProject.BusinessLogic.Locations
                                 if (csd2_rightTrigger.Active)
                                     goto default;
                                 break;
+                    
                             case 1:
                                 if (csd2_leftTrigger.Active)
                                     goto default;
                                 break;
+                            
                             case 2:
                                 if (!csd2.Scripts.LoadTriggerNormal.Active || !csd2.Scripts.DispatchNormalSegmentOccupied.Inactive)
                                     break;
                                 goto default;
+                            
                             default:
                                 LoadCsd2((LOAD_DIRECTION)(index % num1));
                                 return;
                         }
 
                     break;
+
                 case SEGMENT_STATE.OCCUPIED:
                     if (!csd2.Scripts.DispatchNormalSegmentOccupied.Inactive)
                         break;
+                
                     csd2.DispatchNormal();
                     break;
             }
@@ -220,12 +228,15 @@ namespace PharmaProject.BusinessLogic.Locations
                 case LOAD_DIRECTION.RIGHT:
                     if (!loadCsd1Right.Run())
                         break;
+                    
                     csd1.ForceLoadPending();
                     csd1LastLoaded = LOAD_DIRECTION.RIGHT;
                     break;
+                
                 case LOAD_DIRECTION.LEFT:
                     if (loadCsd1Left.Run())
                         break;
+                
                     csd1.ForceLoadPending();
                     csd1LastLoaded = LOAD_DIRECTION.LEFT;
                     break;
@@ -239,18 +250,23 @@ namespace PharmaProject.BusinessLogic.Locations
                 case LOAD_DIRECTION.RIGHT:
                     if (!loadCsd2Right.Run())
                         break;
+                
                     csd2.ForceLoadPending();
                     csd2LastLoaded = LOAD_DIRECTION.RIGHT;
                     break;
+
                 case LOAD_DIRECTION.LEFT:
                     if (!loadCsd2Left.Run())
                         break;
+                    
                     csd2.ForceLoadPending();
                     csd2LastLoaded = LOAD_DIRECTION.LEFT;
                     break;
+
                 case LOAD_DIRECTION.MAIN:
                     if (!csd2.LoadNormal())
                         break;
+                
                     csd2.ForceLoadPending();
                     csd2LastLoaded = LOAD_DIRECTION.MAIN;
                     break;

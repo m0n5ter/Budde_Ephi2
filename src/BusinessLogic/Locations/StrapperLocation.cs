@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.StrapperLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
@@ -54,9 +48,12 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (wmsFeedbackReceived == value)
                     return;
+
                 wmsFeedbackReceived = value;
+                
                 if (!value)
                     return;
+                
                 Evaluate();
             }
         }
@@ -104,6 +101,7 @@ namespace PharmaProject.BusinessLogic.Locations
                     {
                         if (string.IsNullOrEmpty(barcode))
                             break;
+
                         var direction = doSkipStrapping ? WMS_TOTE_DIRECTION.DIRECTION_2 : WMS_TOTE_DIRECTION.DIRECTION_1;
                         WmsCommunicator.Send(BaseMessage.MessageToByteArray(new RückmeldungPackstück(direction, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
                         NdwConnectCommunicator.DirectionSentUpdate(LocationNumber, barcode, direction);
@@ -114,6 +112,7 @@ namespace PharmaProject.BusinessLogic.Locations
                         doSkipStrapping = false;
                         barcode = string.Empty;
                     }
+
                 case CONDITIONAL_STATE.TIMED_OUT:
                     ReEvaluate.Start();
                     break;
@@ -124,8 +123,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (pin.Inactive)
                 StartLoading();
+
             if (!pin.Active)
                 return;
+            
             WaitWmsFeedbackStart();
         }
 
@@ -144,29 +145,25 @@ namespace PharmaProject.BusinessLogic.Locations
         public override void DoEvaluate()
         {
             if (!strapperReady.Active)
-            {
                 log.Warn("Strapper not ready");
-            }
+            
             else if (!preStrapOccupied.Active)
-            {
                 log.Warn("No tote to dispatch");
-            }
+            
             else if (!secondSegmentOccupied.Inactive)
-            {
                 log.Warn("No room to load");
-            }
+            
             else if (dispatchToStrapper.IsRunningOrAboutToBe)
-            {
                 log.Warn("Dispatching already in progress");
-            }
+            
             else if (!WmsFeedbackReceived && !WaitWmsFeedbackTimedout)
-            {
                 log.Warn("WMS did not respond yet");
-            }
+            
             else
             {
                 if (doSkipStrapping)
                     skipStrapping.Run();
+            
                 dispatchToStrapper.Run();
                 WmsFeedbackReceived = false;
             }
@@ -185,6 +182,7 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (!this.barcode.Equals(barcode))
                     return;
+                
                 doSkipStrapping = target == WMS_TOTE_DIRECTION.DIRECTION_1;
                 WmsFeedbackReceived = true;
             }

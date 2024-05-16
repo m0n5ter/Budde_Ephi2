@@ -32,8 +32,7 @@ public class AsyncRaiseSingleton
                 try
                 {
                     var action = evnt;
-                    if (action != null)
-                        action();
+                    action?.Invoke();
                 }
                 catch (Exception ex)
                 {
@@ -66,7 +65,7 @@ public class AsyncRaiseSingleton
         {
             if (lastException != null)
             {
-                var applicationException = new ApplicationException(string.Format("Inner exception occured {0} ago", DateTime.Now.Subtract(exceptionOccured).ToString()), lastException);
+                var applicationException = new ApplicationException($"Inner exception occured {DateTime.Now.Subtract(exceptionOccured).ToString()} ago", lastException);
                 lastException = null;
                 throw applicationException;
             }

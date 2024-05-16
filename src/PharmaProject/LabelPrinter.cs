@@ -56,9 +56,7 @@ namespace PharmaProject
                     return;
                 state = value;
                 var onStateChanged = OnStateChanged;
-                if (onStateChanged == null)
-                    return;
-                onStateChanged(this);
+                onStateChanged?.Invoke(this);
             }
         }
 
@@ -145,9 +143,7 @@ namespace PharmaProject
                     break;
                 default:
                     var onDoEvaluate = OnDoEvaluate;
-                    if (onDoEvaluate == null)
-                        break;
-                    onDoEvaluate(this);
+                    onDoEvaluate?.Invoke(this);
                     break;
             }
         }

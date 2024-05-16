@@ -39,9 +39,9 @@ namespace PharmaProject.Locations
             string BSTopIP)
             : base(IP, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("Loc:{0}, BS Left", locationNumber), IPAddress.Parse(BSLeftIP)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("Loc:{0}, BS Right", locationNumber), IPAddress.Parse(BSRightIP)));
-            BSTop = new BarcodeScanner(string.Format("Loc:{0}, BS Top", locationNumber), IPAddress.Parse(BSTopIP));
+            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Left", IPAddress.Parse(BSLeftIP)));
+            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Right", IPAddress.Parse(BSRightIP)));
+            BSTop = new BarcodeScanner($"Loc:{locationNumber}, BS Top", IPAddress.Parse(BSTopIP));
             toteAvlMainTrack = lastSensor;
             lastSensor.OnStateChanged += LastSensor_OnStateChanged;
             BSTop.OnBarcodeScanned += BSTop_OnBarcodeScanned;
@@ -164,7 +164,7 @@ namespace PharmaProject.Locations
                             return;
                         if (ToteBarcodeValid)
                         {
-                            Log(string.Format("TopScanned: {0}, WmsReceived: {1}", topScanned, checkCode));
+                            Log($"TopScanned: {topScanned}, WmsReceived: {checkCode}");
                             if (!csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
                             {
                                 csd1.LoadNormal();

@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.SmallStorageSublocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using Ephi.Core.UTC;
+﻿using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
 using PharmaProject.BusinessLogic.Misc;
 using PharmaProject.BusinessLogic.Segments;
@@ -23,7 +17,7 @@ namespace PharmaProject.BusinessLogic.Locations
         private OutPin inReturn3_Run;
 
         internal SmallStorageSublocation(string ip, SmallStorageLocation parent)
-            : base(ip, string.Format("{0}sub", parent.LocationNumber), 3U)
+            : base(ip, $"{parent.LocationNumber}sub", 3U)
         {
             csd4 = new CSD(parent.LocationNumber, 4U, GetScripts(1U), parent);
             csd5 = new CSD(parent.LocationNumber, 5U, GetScripts(2U), parent);
@@ -34,7 +28,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             get
             {
-                return new InPin[3]
+                return new[]
                 {
                     inReturn_1_Btn,
                     inReturn_2_Btn,
@@ -76,10 +70,11 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 3U
-                ? MakeConditionalBatch(string.Format("Load CSD 6 from IO conveyor (Loc:{0}, CSD:{1})", LocId, csdNum))
+                ? MakeConditionalBatch($"Load CSD 6 from IO conveyor (Loc:{LocId}, CSD:{csdNum})")
                     .AddStatement(MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.OccupiedRollers, csdNum, endDelay: 1000U)).AddStatement(
-                        MakeConditionalStatement(string.Format("Disp IO segment to CSD 6 (Loc:{0}, CSD:{1})", LocId, csdNum), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+                        MakeConditionalStatement($"Disp IO segment to CSD 6 (Loc:{LocId}, CSD:{csdNum})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                             .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.OccupiedRollers).AddGuardBlock(1000U).AddGuardPin(scripts.OccupiedRollers).CloseBlock().CloseBlock()
                             .AddOutputState(inReturn3_Run))
                 : (Conditional)null;
@@ -88,18 +83,22 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.DispatchNormalSegmentOccupied, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading);
+            
             return csdNum == 2U ? base.DispatchNormalScript(csdNum) : null;
         }
 
         protected override Conditional DispatchAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, GetScripts(2U).OccupiedBelts, scripts.OccupiedBelts, csdNum,
                     middleMotorRun: scripts.MiddleRollersRun);
+            
             return csdNum == 3U
                 ? MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, scripts.DispatchAlternativeSegmentOccupied, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading)
@@ -109,8 +108,10 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             if (csdNum == 2U)
                 return base.LoadAlternativeScript(csdNum);
+            
             return csdNum == 3U
                 ? MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, scripts.OccupiedRollers, csdNum, prevSegDispatch: scripts.UpstreamStartDispatching,
                     endDelay: 500U)
@@ -121,10 +122,12 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csdNum != 1U && csdNum != 3U)
                 return null;
+            
             var scripts = GetScripts(csdNum);
-            return scripts == null || scripts.LoadAlternative == null || scripts.DispatchAlternative == null
+            
+            return scripts?.LoadAlternative == null || scripts.DispatchAlternative == null
                 ? null
-                : (Conditional)MakeConditionalMacro(string.Format("Pass through alternative (Loc:{0}, CSD:{1})", LocId, csdNum)).AddStatement(scripts.LoadAlternative)
+                : (Conditional)MakeConditionalMacro($"Pass through alternative (Loc:{LocId}, CSD:{csdNum})").AddStatement(scripts.LoadAlternative)
                     .AddStatement(scripts.DispatchAlternative);
         }
 

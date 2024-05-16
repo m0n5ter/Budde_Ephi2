@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.Pbl_B_EnterMainLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping;
 using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
@@ -39,7 +33,7 @@ namespace PharmaProject.BusinessLogic.Locations
             base.InitScripts();
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
-            var name = string.Format(" Tote merge 2=>1 (Loc:{0})", LocationNumber);
+            var name = $" Tote merge 2=>1 (Loc:{LocationNumber})";
             Conditional conditional = MakeConditionalBatch("Simultaneously load+dispatch" + name).AddStatement(scripts1.LoadAlternative).AddStatement(scripts2.DispatchAlternative);
             merge2to1 = MakeConditionalMacro(name).AddStatement(scripts2.LoadNormal).AddStatement(conditional);
         }
@@ -49,6 +43,7 @@ namespace PharmaProject.BusinessLogic.Locations
             var scripts1 = GetScripts(csdNum);
             Conditional conditional1 = null;
             Conditional conditional2;
+
             switch (csdNum)
             {
                 case 1:
@@ -62,18 +57,21 @@ namespace PharmaProject.BusinessLogic.Locations
                     csd1AutoAlign = conditional1;
                     csd1AutoAlign.OnStateChanged += Script_OnStateChanged;
                     break;
+            
                 case 2:
                     conditional2 = MakeLoadStatement(scripts1.RollersRun, TABLE_POSITION.DOWN, scripts1.RollersDir, MOTOR_DIR.CW, scripts1.OccupiedRollers, csdNum,
                         prevSegDispatch: scripts1.UpstreamStartDispatching, endDelay: 200U);
                     break;
+                
                 default:
                     return null;
             }
 
-            var logicBlock = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", csdNum, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            var logicBlock = MakeConditionalStatement($"Auto load precondition CSD:{csdNum}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts1.LoadTriggerNormal).AddCondition(scripts1.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts1.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddGuardBlock(100U).AddGuardPin(scripts1.BeltsRun).AddGuardPin(scripts1.LiftRun).CloseBlock();
+            
             if (csdNum == 1U)
             {
                 var scripts2 = GetScripts(2U);
@@ -82,8 +80,10 @@ namespace PharmaProject.BusinessLogic.Locations
             }
 
             Conditional conditional3 = logicBlock.CloseBlock();
-            MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", csdNum, LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(conditional3).AddStatement(conditional2)
+            
+            MakeConditionalMacro($"Auto load script CSD:{csdNum}, Loc:{LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(conditional3).AddStatement(conditional2)
                 .AddStatement(conditional1);
+            
             return conditional2;
         }
 
@@ -91,7 +91,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csdNum != 1U)
                 return null;
+            
             var scripts = GetScripts(csdNum);
+            
             return MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedRollers, csdNum, endDelay: 1000U, middleMotorRun: scripts.MiddleRollersRun,
                 middleMotorDir: scripts.MiddleRollersDir);
         }
@@ -99,6 +101,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.RollersRun, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading, endDelay: 200U)
@@ -109,7 +112,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csdNum != 2U)
                 return null;
+            
             var scripts = GetScripts(csdNum);
+            
             return MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, GetScripts(1U).OccupiedRollers, scripts.OccupiedRollers, csdNum, endDelay: 900U,
                 middleMotorRun: scripts.MiddleRollersRun, middleMotorDir: scripts.MiddleRollersDir);
         }
@@ -130,6 +135,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (Status != UTC_STATUS.OPERATIONAL)
                 return;
+            
             EvaluateCsds(csd1, csd2);
             EvaluateCsds(csd2, csd1);
         }
@@ -149,10 +155,12 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!Helpers.Contains(csd.State, SEGMENT_STATE.OCCUPIED))
                 return;
+            
             if (csd == csd1)
             {
                 if (csd.Scripts.DispatchNormalSegmentOccupied.Active)
                     return;
+            
                 if (csd.Scripts.DownstreamStartLoading.Active || csd.Scripts.DownstreamStartLoading.PinStateAge < TimeSpan.FromSeconds(2.0) || csd1AutoAlign.IsRunningOrAboutToBe)
                 {
                     ReEvaluate.Start();
@@ -161,6 +169,7 @@ namespace PharmaProject.BusinessLogic.Locations
                 {
                     if (!csd.IsOccupied)
                         return;
+                
                     csd.DispatchNormal();
                 }
             }
@@ -168,6 +177,7 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (!csd1.IsIdle || !merge2to1.Run())
                     return;
+                
                 csd1.ForceLoadPending();
                 csd2.ForceDispatchPending();
             }

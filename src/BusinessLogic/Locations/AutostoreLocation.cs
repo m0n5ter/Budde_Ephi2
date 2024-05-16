@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.AutostoreLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Text;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
@@ -43,10 +37,13 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (dtb.Status != CONDITIONAL_STATE.FINISHED)
                 return;
+
             lastToteEnter = DateTime.Now;
             checkLoadNextTote.Start();
+            
             if (string.IsNullOrEmpty(pendingBarcode))
                 return;
+            
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new RückmeldungPackstück(WMS_TOTE_DIRECTION.DIRECTION_1, Encoding.ASCII.GetBytes(pendingBarcode), LocationNumber)));
             NdwConnectCommunicator.DirectionSentUpdate(LocationNumber, pendingBarcode, WMS_TOTE_DIRECTION.DIRECTION_1);
             pendingBarcode = null;
@@ -56,6 +53,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd1.State != SEGMENT_STATE.LOADING || flushBeltToteCnt <= 0)
                 return;
+            
             --flushBeltToteCnt;
         }
 
@@ -69,8 +67,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd == null)
                 return;
+            
             base.AttachCsdEventHandlers(csd);
             var scripts = csd.Scripts;
+            
             switch (csd.CsdNum)
             {
                 case 2:
@@ -99,8 +99,13 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             base.InitScripts();
             var scripts = GetScripts(1U);
-            MakeConditionalStatement(string.Format("Auto run belt autostore (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_AT_CONDITION_TRUE, RUN_MODE.PERMANENTLY).AddLogicBlock(LOGIC_FUNCTION.OR)
-                .AddCondition(scripts.RollersRun).AddCondition(outStartSegmentRun).CloseBlock().AddOutputState(outBeltRun);
+            
+            MakeConditionalStatement($"Auto run belt autostore (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_AT_CONDITION_TRUE, RUN_MODE.PERMANENTLY).AddLogicBlock(LOGIC_FUNCTION.OR)
+                .AddCondition(scripts.RollersRun)
+                .AddCondition(outStartSegmentRun)
+                .CloseBlock()
+                .AddOutputState(outBeltRun);
+            
             dispatchToBelt = MakeConditionalStatement("Move segment 2 seconds", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddTimeoutCondition(2000U).AddOutputState(outStartSegmentRun);
             dispatchToBelt.OnStateChanged += DispatchToBelt_OnStateChanged;
         }
@@ -108,6 +113,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional PassThroughScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 2U
                 ? MakeConditionalBatch("Passthrough CSD2")
                     .AddStatement(MakeConditionalStatement("Upstream dispatch command CSD2", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddTimeoutCondition(100U)
@@ -125,6 +131,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 2U
                 ? MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedRollers, csdNum, endDelay: 700U, middleMotorRun: scripts.MiddleRollersRun)
                 : null;
@@ -133,6 +140,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 2U
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.DispatchNormalSegmentOccupied, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading)
@@ -142,6 +150,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, scripts.DispatchAlternativeSegmentOccupied, scripts.OccupiedRollers, csdNum,
                     middleMotorRun: scripts.MiddleRollersRun)
@@ -152,6 +161,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!TotePending || dispatchToBelt.IsRunningOrAboutToBe || DateTime.Now.Subtract(lastToteEnter) < TimeSpan.FromMilliseconds(4000.0))
                 return;
+            
             switch (csd1.State)
             {
                 case SEGMENT_STATE.DISPATCHING_PENDING:
@@ -171,6 +181,7 @@ namespace PharmaProject.BusinessLogic.Locations
         public override void DoEvaluate()
         {
             var scripts = GetScripts(2U);
+            
             if (csd1.State == SEGMENT_STATE.IDLE && flushBeltToteCnt != 0)
             {
                 lastToteEnter = DateTime.Now;
@@ -193,6 +204,7 @@ namespace PharmaProject.BusinessLogic.Locations
                     }
 
                     break;
+            
                 case SEGMENT_STATE.OCCUPIED:
                     if (scripts.DispatchNormalSegmentOccupied.Inactive)
                     {
@@ -212,6 +224,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (string.IsNullOrEmpty(barcode))
                 return;
+
             pendingBarcode = barcode;
             Evaluate();
         }

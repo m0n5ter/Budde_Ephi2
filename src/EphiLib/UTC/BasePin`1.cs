@@ -78,6 +78,6 @@ public abstract class BasePin<T> : BasePin where T : BasePin<T>
 
     public override string ToString()
     {
-        return string.Format("{0} Pin{1} {2}({3})", DirectionName, Pin, State, Physical);
+        return $"{DirectionName} Pin{Pin} {State}({Physical})";
     }
 }

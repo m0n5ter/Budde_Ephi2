@@ -44,6 +44,6 @@ public class StatePin
 
     public override string ToString()
     {
-        return string.Format("{0}-pin{1}", Formatting.TitleCase(Dir), Pin);
+        return $"{Formatting.TitleCase(Dir)}-pin{Pin}";
     }
 }

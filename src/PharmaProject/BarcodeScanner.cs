@@ -36,14 +36,12 @@ namespace PharmaProject
                 if (str2 == "NoRead")
                 {
                     var onNoRead = OnNoRead;
-                    if (onNoRead != null)
-                        onNoRead();
+                    onNoRead?.Invoke();
                 }
                 else
                 {
                     var onBarcodeScanned = OnBarcodeScanned;
-                    if (onBarcodeScanned != null)
-                        onBarcodeScanned(str2);
+                    onBarcodeScanned?.Invoke(str2);
                 }
         }
     }

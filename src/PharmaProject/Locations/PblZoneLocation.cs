@@ -25,8 +25,8 @@ namespace PharmaProject.Locations
         public PblZoneLocation(string utcIp, uint locationNumber, string csd1BS1Ip, string csd1BS2Ip)
             : base(utcIp, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd1BS1 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS1Ip)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd1BS2 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS2Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"csd1BS1 Loc:{locationNumber}", IPAddress.Parse(csd1BS1Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"csd1BS2 Loc:{locationNumber}", IPAddress.Parse(csd1BS2Ip)));
         }
 
         public LongStretch LongSeg
@@ -69,18 +69,18 @@ namespace PharmaProject.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            var str = string.Format(" Crossover 2=>1 (Loc:{0})", LocationNumber);
+            var str = $" Crossover 2=>1 (Loc:{LocationNumber})";
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
             Conditional conditional1 = MakeConditionalBatch("Simultaneously load+dispatch" + str).AddStatement(scripts1.LoadAlternative).AddStatement(scripts2.DispatchAlternative);
             CrossOverAlt = MakeConditionalMacro("Dispatch alternative " + str).AddStatement(scripts2.LoadNormal).AddStatement(conditional1).AddStatement(scripts1.DispatchAlternative);
             CrossOverNormal = MakeConditionalMacro("Dispatch normal " + str).AddStatement(scripts2.LoadNormal).AddStatement(conditional1).AddStatement(scripts1.DispatchNormal);
             var scripts3 = GetScripts(2U);
-            Conditional conditional2 = MakeConditionalStatement(string.Format("Auto load precondition CSD:2, Loc:{0}", LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            Conditional conditional2 = MakeConditionalStatement($"Auto load precondition CSD:2, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts3.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts3.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts3.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts3.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts3.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts3.LoadTriggerNormal).CloseBlock();
-            csd2AutoLoad = MakeConditionalMacro(string.Format("Auto load script CSD:2, Loc:{0}", LocationNumber)).AddStatement(conditional2).AddStatement(scripts3.LoadNormal);
+            csd2AutoLoad = MakeConditionalMacro($"Auto load script CSD:2, Loc:{LocationNumber}").AddStatement(conditional2).AddStatement(scripts3.LoadNormal);
         }
 
         protected override Conditional LoadNormalScript(uint csdNum)
@@ -104,7 +104,7 @@ namespace PharmaProject.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
-            string.Format("Zone Loc. {0}, CSD {1} ", LocationNumber, csdNum);
+            $"Zone Loc. {LocationNumber}, CSD {csdNum} ";
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.LiftDown, scripts.OccupiedBelts, csdNum, endDelay: 500U,
                     middleMotorRun: MakeOut(PIN._22));
@@ -148,7 +148,7 @@ namespace PharmaProject.Locations
                     break;
                 case CSD_STATE.OCCUPIED:
                     var route = csd2.Route;
-                    var to = route != null ? route.Destination : DESTINATION.TBD;
+                    var to = route?.Destination ?? DESTINATION.TBD;
                     if (to == DESTINATION.TBD)
                         to = DESTINATION.DISPATCH_CSD2;
                     Dispatch(to);

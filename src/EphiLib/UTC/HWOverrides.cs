@@ -127,6 +127,6 @@ public class HWOverrides
 
     public override int GetHashCode()
     {
-        return string.Format("{0}-{1}", overriddeMask.GetHashCode(), overriddenStates.GetHashCode()).GetHashCode();
+        return $"{overriddeMask.GetHashCode()}-{overriddenStates.GetHashCode()}".GetHashCode();
     }
 }

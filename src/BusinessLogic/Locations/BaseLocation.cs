@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.BaseLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Ephi.Core.Helping;
@@ -36,21 +30,27 @@ namespace PharmaProject.BusinessLogic.Locations
         private uint waitForWmsFeedbackMs;
         private DelayedEvent WaitWmsEvaluate;
 
-        public BaseLocation(string IP, uint locationNumber, uint numOfCSDs)
+        protected BaseLocation(string IP, uint locationNumber, uint numOfCSDs)
             : base(IP, locationNumber.ToString(), numOfCSDs)
         {
             LocationNumber = locationNumber;
             PreInit();
+        
             if (HasCSD(1U))
                 csd1 = MakeCSD(1U);
+            
             if (HasCSD(2U))
                 csd2 = MakeCSD(2U);
+            
             if (HasCSD(3U))
                 csd3 = MakeCSD(3U);
+            
             if (locationList.ContainsKey(LocationNumber))
                 throw new ArgumentOutOfRangeException(nameof(locationNumber), "Location already exists");
+            
             if (locationNumber != 0U)
                 locationList.Add(locationNumber, this);
+            
             AttachEventHandlers();
             ReEvaluate = new DelayedEvent(500U, Evaluate);
         }
@@ -62,7 +62,9 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if ((int)waitForWmsFeedbackMs == (int)value)
                     return;
+            
                 waitForWmsFeedbackMs = value;
+                
                 if (value == 0U)
                 {
                     WaitWmsEvaluate?.Dispose();
@@ -99,8 +101,7 @@ namespace PharmaProject.BusinessLogic.Locations
 
         public static BaseLocation FindLocation(uint locationNumber)
         {
-            BaseLocation baseLocation;
-            return locationList.TryGetValue(locationNumber, out baseLocation) ? baseLocation : null;
+            return locationList.TryGetValue(locationNumber, out var baseLocation) ? baseLocation : null;
         }
 
         public static void AssignWmsTimeouts()
@@ -131,7 +132,8 @@ namespace PharmaProject.BusinessLogic.Locations
         protected bool GetCsdDispatchDestination(CSD csd, ref DESTINATION def)
         {
             var route = csd.Route;
-            var destination = route != null ? route.Destination : DESTINATION.TBD;
+            var destination = route?.Destination ?? DESTINATION.TBD;
+
             if (destination == DESTINATION.TBD && csd.StateAge < TimeSpan.FromMilliseconds(WaitForWmsFeedbackMs))
             {
                 ReEvaluate.Start();
@@ -140,14 +142,17 @@ namespace PharmaProject.BusinessLogic.Locations
 
             if (destination != DESTINATION.TBD)
                 def = destination;
+            
             return true;
         }
 
         public void Log(string txt)
         {
             log.Info(txt);
+            
             if (!DoLog)
                 return;
+            
             Console.WriteLine("{0}\tLoc{1}, {2}", DateTime.Now.TimeOfDay, LocationNumber, txt);
         }
 
@@ -168,24 +173,37 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd == null)
                 return;
+            
             var loadTriggerNormal = csd.Scripts.LoadTriggerNormal;
+            
             if ((loadTriggerNormal != null ? loadTriggerNormal.IsDummy ? 1 : 0 : 1) == 0)
                 csd.Scripts.LoadTriggerNormal.OnStateChanged += TriggerEvaluate;
+            
             var triggerAlternative = csd.Scripts.LoadTriggerAlternative;
+            
             if ((triggerAlternative != null ? triggerAlternative.IsDummy ? 1 : 0 : 1) == 0)
                 csd.Scripts.LoadTriggerAlternative.OnStateChanged += TriggerEvaluate;
+            
             var occupiedBelts = csd.Scripts.OccupiedBelts;
+            
             if ((occupiedBelts != null ? occupiedBelts.IsDummy ? 1 : 0 : 1) == 0)
                 csd.Scripts.OccupiedBelts.OnStateChanged += TriggerEvaluate;
+            
             var occupiedRollers = csd.Scripts.OccupiedRollers;
+            
             if ((occupiedRollers != null ? occupiedRollers.IsDummy ? 1 : 0 : 1) == 0)
                 csd.Scripts.OccupiedRollers.OnStateChanged += TriggerEvaluate;
+            
             var normalSegmentOccupied = csd.Scripts.DispatchNormalSegmentOccupied;
+            
             if ((normalSegmentOccupied != null ? normalSegmentOccupied.IsDummy ? 1 : 0 : 1) == 0)
                 csd.Scripts.DispatchNormalSegmentOccupied.OnStateChanged += TriggerEvaluate;
+            
             var alternativeSegmentOccupied = csd.Scripts.DispatchAlternativeSegmentOccupied;
+            
             if ((alternativeSegmentOccupied != null ? alternativeSegmentOccupied.IsDummy ? 1 : 0 : 1) == 0)
                 csd.Scripts.DispatchAlternativeSegmentOccupied.OnStateChanged += TriggerEvaluate;
+            
             csd.OnStateChanged += Csd_OnStateChanged;
         }
 
@@ -193,6 +211,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd.IsOccupied)
                 WaitWmsEvaluate?.Start();
+            
             switch (csd.State)
             {
                 case SEGMENT_STATE.IDLE:
@@ -223,8 +242,10 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void SoftEmrgChanged()
         {
             base.SoftEmrgChanged();
+            
             if (SoftEmergency)
                 return;
+            
             Evaluate();
         }
 
@@ -232,14 +253,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             switch (csdNum)
             {
-                case 1:
-                    return csd1;
-                case 2:
-                    return csd2;
-                case 3:
-                    return csd3;
-                default:
-                    return null;
+                case 1: return csd1;
+                case 2: return csd2;
+                case 3: return csd3;
+                default: return null;
             }
         }
 
@@ -247,11 +264,14 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (Status != UTC_STATUS.OPERATIONAL || EmergencyStop)
                 return;
+         
             lock (EvaluateLock)
             {
                 evalPending = true;
+            
                 if (evalRunning)
                     return;
+                
                 evalRunning = true;
             }
 
@@ -272,10 +292,10 @@ namespace PharmaProject.BusinessLogic.Locations
                     csd3?.InvalidateRoute();
                     DoEvaluate();
                 }
-                catch (Exception ex)
+                catch
                 {
                     evalRunning = false;
-                    throw ex;
+                    throw;
                 }
 
                 lock (EvaluateLock)
@@ -301,6 +321,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!SendAllowed)
                 return;
+
             NotifyWmsNoread();
             NdwConnectCommunicator.BarcodeScannedUpdate(LocationNumber, "NoRead");
         }
@@ -324,14 +345,14 @@ namespace PharmaProject.BusinessLogic.Locations
         private void NotifyWmsNoread()
         {
             NoReadSent();
-            Log(string.Format("Notify WMS NoRead: (loc:{0})", LocationNumber));
+            Log($"Notify WMS NoRead: (loc:{LocationNumber})");
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungPackstück(0U, 0U, Encoding.ASCII.GetBytes("NoRead"), 0U, 0U, LocationNumber)));
         }
 
         protected virtual void RequestWmsDirection(string barcode)
         {
             BarcodeSent();
-            Log(string.Format("Requesting direction for barcode:{0} (loc:{1})", barcode, LocationNumber));
+            Log($"Requesting direction for barcode:{barcode} (loc:{LocationNumber})");
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungPackstück(0U, 0U, Encoding.ASCII.GetBytes(barcode), 0U, 0U, LocationNumber)));
         }
 
@@ -347,9 +368,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (message.functionCode != 2U)
                 return false;
+            
             var anweisungPackstück = message as AnweisungPackstück;
             var barcode = Encoding.ASCII.GetString(anweisungPackstück.Barcode).TrimEnd(new char[1]);
-            Log(string.Format("WMS Rx: AnweisungPackstück({0}), Direction {1}", barcode, Formatting.TitleCase(anweisungPackstück.Direction)));
+            Log($"WMS Rx: AnweisungPackstück({barcode}), Direction {Formatting.TitleCase(anweisungPackstück.Direction)}");
             WmsSetDirection(barcode, anweisungPackstück.Direction, anweisungPackstück.Value1);
             NdwConnectCommunicator.DirectionRequestedUpdate(LocationNumber, barcode, anweisungPackstück.Direction);
             return true;

@@ -51,7 +51,7 @@ public class ConditionalStatement : Conditional, IBaseCondition
         get
         {
             var rootCondition = this.rootCondition;
-            return (rootCondition != null ? rootCondition.AllInPins.Distinct().ToArray() : null) ?? new StatePin[0];
+            return rootCondition?.AllInPins.Distinct().ToArray() ?? new StatePin[0];
         }
     }
 
@@ -90,9 +90,7 @@ public class ConditionalStatement : Conditional, IBaseCondition
 
     public ConditionalStatement AddTimeoutCondition(uint ms, BOOL_INTERPRET interpretation = BOOL_INTERPRET.AS_IS)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddTimeoutCondition(outFunction, outMultiplier, interpretation);
     }
 
@@ -117,9 +115,7 @@ public class ConditionalStatement : Conditional, IBaseCondition
 
     public GuardBlock<ConditionalStatement> AddGuardBlock(uint ms, BOOL_INTERPRET interpretation = BOOL_INTERPRET.AS_IS)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddGuardBlock(outFunction, outMultiplier, interpretation);
     }
 
@@ -131,7 +127,7 @@ public class ConditionalStatement : Conditional, IBaseCondition
     private ConditionalStatement AddOutputState(StatePin pin, LEVEL state, bool persistent = false)
     {
         if (outputStates.Any(os => os.Equals(pin)))
-            throw new ArgumentException(string.Format("An output state for {0} was already added in conditional {1}", pin, Name));
+            throw new ArgumentException($"An output state for {pin} was already added in conditional {Name}");
         outputStates.Add(PinState<OutputState>.Make(pin, state).MakePermanent(persistent));
         Invalidate();
         return this;
@@ -158,9 +154,7 @@ public class ConditionalStatement : Conditional, IBaseCondition
 
     public ConditionalStatement AddGlobalTimeout(uint ms)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddGlobalTimeout(outFunction, outMultiplier);
     }
 

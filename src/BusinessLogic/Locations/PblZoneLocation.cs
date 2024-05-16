@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.PblZoneLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Net;
 using System.Text;
 using Ephi.Core.Helping;
@@ -28,8 +22,8 @@ namespace PharmaProject.BusinessLogic.Locations
         public PblZoneLocation(string utcIp, uint locationNumber, string csd1BS1Ip, string csd1BS2Ip)
             : base(utcIp, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd1BS1 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS1Ip)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd1BS2 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS2Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"csd1BS1 Loc:{locationNumber}", IPAddress.Parse(csd1BS1Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"csd1BS2 Loc:{locationNumber}", IPAddress.Parse(csd1BS2Ip)));
         }
 
         public LongStretch LongSeg
@@ -39,9 +33,12 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (longSeg != null)
                     longSeg.OnEmptyChanged -= StretchEmpty_OnEmptyChanged;
+
                 longSeg = value;
+                
                 if (longSeg == null)
                     return;
+                
                 longSeg.OnEmptyChanged += StretchEmpty_OnEmptyChanged;
             }
         }
@@ -72,23 +69,26 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            var str = string.Format(" Crossover 2=>1 (Loc:{0})", LocationNumber);
+            var str = $" Crossover 2=>1 (Loc:{LocationNumber})";
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
             Conditional conditional1 = MakeConditionalBatch("Simultaneously load+dispatch" + str).AddStatement(scripts1.LoadAlternative).AddStatement(scripts2.DispatchAlternative);
             CrossOverAlt = MakeConditionalMacro("Dispatch alternative " + str).AddStatement(scripts2.LoadNormal).AddStatement(conditional1).AddStatement(scripts1.DispatchAlternative);
             CrossOverNormal = MakeConditionalMacro("Dispatch normal " + str).AddStatement(scripts2.LoadNormal).AddStatement(conditional1).AddStatement(scripts1.DispatchNormal);
             var scripts3 = GetScripts(2U);
-            Conditional conditional2 = MakeConditionalStatement(string.Format("Auto load precondition CSD:2, Loc:{0}", LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            
+            Conditional conditional2 = MakeConditionalStatement($"Auto load precondition CSD:2, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts3.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts3.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts3.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts3.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts3.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts3.LoadTriggerNormal).CloseBlock();
-            csd2AutoLoad = MakeConditionalMacro(string.Format("Auto load script CSD:2, Loc:{0}", LocationNumber)).AddStatement(conditional2).AddStatement(scripts3.LoadNormal);
+            
+            csd2AutoLoad = MakeConditionalMacro($"Auto load script CSD:2, Loc:{LocationNumber}").AddStatement(conditional2).AddStatement(scripts3.LoadNormal);
         }
 
         protected override Conditional LoadNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 2U
                 ? MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.OccupiedRollers, csdNum,
                     prevSegDispatch: GetScripts(2U).UpstreamStartDispatching)
@@ -98,6 +98,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedBelts, csdNum, endDelay: 500U, middleMotorRun: scripts.MiddleRollersRun,
                     middleMotorDir: scripts.MiddleRollersDir)
@@ -107,10 +108,11 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
-            string.Format("Zone Loc. {0}, CSD {1} ", LocationNumber, csdNum);
+
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.RollersRun, scripts.OccupiedBelts, csdNum, endDelay: 500U,
                     middleMotorRun: MakeOut(PIN._22));
+            
             return csdNum == 2U
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.RollersRun, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading)
@@ -120,9 +122,11 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, null, scripts.OccupiedBelts, csdNum, endDelay: 3000U,
                     middleMotorRun: MakeOut(PIN._21));
+            
             return csdNum == 2U
                 ? MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, GetScripts(1U).OccupiedBelts, scripts.OccupiedRollers, csdNum,
                     middleMotorRun: scripts.MiddleRollersRun, middleMotorDir: scripts.MiddleRollersDir)
@@ -140,23 +144,31 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 case SEGMENT_STATE.IDLE:
                     var route = csd2.Route;
+                    
                     if (!string.IsNullOrEmpty(route?.Barcode))
                         DispatchWmsFeedback(route);
+                    
                     csd2.Route = null;
                     csd2AutoLoad.Run();
                     break;
+            
                 case SEGMENT_STATE.LOADING_PENDING:
                 case SEGMENT_STATE.LOADING:
                     if (csd2.Route == null)
                         csd2.Route = new Route(START.LOAD_CSD2);
+                
                     if (csd2.Route.Destination == DESTINATION.TBD)
                         break;
+                    
                     Dispatch(csd2.Route.Destination);
                     break;
+                
                 case SEGMENT_STATE.OCCUPIED:
                     var def = DESTINATION.DISPATCH_CSD2;
+                    
                     if (!GetCsdDispatchDestination(csd2, ref def))
                         break;
+                    
                     Dispatch(def);
                     break;
             }
@@ -166,15 +178,19 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (route.Barcode.Equals(string.Empty))
                 return;
+
             WMS_TOTE_DIRECTION direction;
+            
             switch (route.Destination)
             {
                 case DESTINATION.DISPATCH_CSD1:
                     direction = WMS_TOTE_DIRECTION.DIRECTION_2;
                     break;
+            
                 case DESTINATION.DISPATCH_CSD1_ALT:
                     direction = WMS_TOTE_DIRECTION.DIRECTION_3;
                     break;
+                
                 default:
                     direction = WMS_TOTE_DIRECTION.DIRECTION_1;
                     break;
@@ -187,8 +203,10 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void OnBarcodeScanned(string barcode)
         {
             base.OnBarcodeScanned(barcode);
+            
             if (csd2.Route == null)
                 csd2.Route = new Route(START.LOAD_CSD2);
+            
             csd2.Route.Barcode = barcode;
         }
 
@@ -200,14 +218,17 @@ namespace PharmaProject.BusinessLogic.Locations
             var route = csd2.Route;
             if (route == null || !barcode.Equals(route.Barcode) || route.Destination != DESTINATION.TBD)
                 return;
+            
             switch (target)
             {
                 case WMS_TOTE_DIRECTION.DIRECTION_1:
                     route.Destination = DESTINATION.DISPATCH_CSD2;
                     break;
+            
                 case WMS_TOTE_DIRECTION.DIRECTION_2:
                     route.Destination = DESTINATION.DISPATCH_CSD1;
                     break;
+                
                 case WMS_TOTE_DIRECTION.DIRECTION_3:
                     route.Destination = DESTINATION.DISPATCH_CSD1_ALT;
                     break;
@@ -246,6 +267,7 @@ namespace PharmaProject.BusinessLogic.Locations
                         csd1.ForceLoadPending();
                         csd2.ForceDispatchPending();
                         break;
+                
                     case DESTINATION.DISPATCH_CSD1_ALT:
                         if (!csd1.IsIdle)
                         {
@@ -266,6 +288,7 @@ namespace PharmaProject.BusinessLogic.Locations
                         csd1.ForceLoadPending();
                         csd2.ForceDispatchPending();
                         break;
+                    
                     case DESTINATION.DISPATCH_CSD2:
                         if (!LongSeg.Empty)
                         {
@@ -285,14 +308,17 @@ namespace PharmaProject.BusinessLogic.Locations
                         LongSeg.PerformedUpstreamDispatch();
                         csd2.PassThrough();
                         break;
+                    
                     default:
                         log.InfoFormat("NO DISPATCH: Destination TBD Exception thrown");
                         throw new ArgumentException("Illegal dispatch destination");
                 }
 
                 var route = csd2.Route;
+
                 if (route == null)
                     return;
+                
                 route.Destination = to;
             }
         }

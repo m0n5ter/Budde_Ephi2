@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.PackingEnterSlopeLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
 using PharmaProject.BusinessLogic.Segments;
@@ -79,11 +73,14 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (acmFull == value)
                     return;
+
                 acmFull = value;
                 Log("ACM on top of slope turned " + (value ? "full" : "empty"));
+                
                 if (!acmFull)
                 {
                     SlopeDelayedStop.Stop();
+                
                     if (makeSpaceAfterSlopeStart)
                     {
                         Log("Starting slope with a delayed allow for new tote");
@@ -100,6 +97,7 @@ namespace PharmaProject.BusinessLogic.Locations
                 {
                     DelayedAllowAfterStart.Stop();
                     makeSpaceAfterSlopeStart = LastAllowedAge < TimeSpan.FromMilliseconds(2000.0);
+                    
                     if (LastAllowedAge < TimeSpan.FromMilliseconds(1000.0))
                     {
                         Log("Stopping slope with a delay to finish loading tote");
@@ -117,6 +115,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (AcmFull || DelayedAllowAfterStart.Running)
                 return false;
+            
             lastAllowed = DateTime.Now;
             SlopeRun = true;
             return true;
@@ -154,6 +153,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             AcmFull = true;
         }
 

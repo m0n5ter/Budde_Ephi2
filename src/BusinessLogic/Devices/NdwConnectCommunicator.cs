@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Devices.NdwConnectCommunicator
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -45,6 +39,7 @@ namespace PharmaProject.BusinessLogic.Devices
         {
             var message = string.Format("{{ \"csdState\": \"{0}\", \"tablePosition\": \"{1}\", \"rollersMoving\": \"{2}\", \"beltsMoving\": \"{3}\" }}", csdState, tablePosition, rollersMoving,
                 beltsMoving);
+
             if (message == lastSentCsdUpdate)
                 return false;
             lastSentCsdUpdate = message;
@@ -53,7 +48,7 @@ namespace PharmaProject.BusinessLogic.Devices
 
         public static bool BarcodeScannedUpdate(uint locationNumber, string barcode)
         {
-            return Send(string.Format(barcodeScannedTopic, locationNumber), string.Format("{{ \"barcode\": \"{0}\", \"tag\": \"{1}\" }}", barcode, locationNumber));
+            return Send(string.Format(barcodeScannedTopic, locationNumber), $"{{ \"barcode\": \"{barcode}\", \"tag\": \"{locationNumber}\" }}");
         }
 
         public static bool DirectionRequestedUpdate(
@@ -62,7 +57,7 @@ namespace PharmaProject.BusinessLogic.Devices
             WMS_TOTE_DIRECTION direction)
         {
             return Send(string.Format(directionRequestedTopic, locationNumber),
-                string.Format("{{ \"barcode\": \"{0}\", \"direction\": \"{1}\", \"tag\": \"{2}\" }}", barcode, (uint)direction, locationNumber));
+                $"{{ \"barcode\": \"{barcode}\", \"direction\": \"{(uint)direction}\", \"tag\": \"{locationNumber}\" }}");
         }
 
         public static bool DirectionSentUpdate(
@@ -71,7 +66,7 @@ namespace PharmaProject.BusinessLogic.Devices
             WMS_TOTE_DIRECTION direction)
         {
             return Send(string.Format(directionSentTopic, locationNumber),
-                string.Format("{{ \"barcode\": \"{0}\", \"direction\": \"{1}\", \"tag\": \"{2}\" }}", barcode, (uint)direction, locationNumber));
+                $"{{ \"barcode\": \"{barcode}\", \"direction\": \"{(uint)direction}\", \"tag\": \"{locationNumber}\" }}");
         }
 
         private static bool Send(string topic, string message)
@@ -85,8 +80,10 @@ namespace PharmaProject.BusinessLogic.Devices
         public static void Start()
         {
             var connecting = NdwConnectCommunicator.connecting;
+            
             if ((connecting != null ? connecting.IsAlive ? 1 : 0 : 0) != 0)
                 return;
+            
             Stop();
             MqttClientSingleton.ConnectionClosed += MqttClient_ConnectionClosed;
             NdwConnectCommunicator.connecting = new Thread(AsyncConnect);
@@ -96,18 +93,22 @@ namespace PharmaProject.BusinessLogic.Devices
         public static void Stop()
         {
             MqttClientSingleton.ConnectionClosed -= MqttClient_ConnectionClosed;
+
             try
             {
                 var connecting = NdwConnectCommunicator.connecting;
+            
                 if ((connecting != null ? connecting.IsAlive ? 1 : 0 : 0) != 0)
                     NdwConnectCommunicator.connecting.Abort();
             }
             catch
             {
+                // ignore
             }
 
             if (!MqttClientSingleton.IsConnected)
                 return;
+
             MqttClientSingleton.Disconnect();
         }
 
@@ -119,6 +120,7 @@ namespace PharmaProject.BusinessLogic.Devices
             }
             catch
             {
+                // ignore
             }
         }
     }

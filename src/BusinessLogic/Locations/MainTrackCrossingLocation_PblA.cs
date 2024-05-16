@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.MainTrackCrossingLocation_PblA
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
@@ -38,6 +32,7 @@ namespace PharmaProject.BusinessLogic.Locations
             var crossingLocationPblA = this;
             slopeControl.CanTransferPtr = SlopeLoadAllowed;
             SlopeSleep = new DelayedEvent(TimeSpan.FromSeconds(30.0), () => crossingLocationPblA.SlopeRun = false);
+
             deDispatchDelayedStart = new DelayedEvent(4500U, () =>
             {
                 crossingLocationPblA.log.Info("Allowing upstream ACM to dispatch to slope");
@@ -54,10 +49,13 @@ namespace PharmaProject.BusinessLogic.Locations
                     SlopeSleep.Start();
                 else
                     SlopeSleep.Stop();
+            
                 if (slopeRun == value)
                     return;
-                Log(string.Format("Slope {0}", value ? "start" : (object)"stop"));
+                
+                Log($"Slope {(value ? "start" : (object)"stop")}");
                 slopeRun = value;
+                
                 if (slopeRun)
                 {
                     outSlopeRun1.Activate();
@@ -78,7 +76,9 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (acmFull == value)
                     return;
+                
                 acmFull = value;
+                
                 if (acmFull)
                 {
                     log.InfoFormat("ACM Turned full. Stopping slope");
@@ -105,6 +105,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (AcmFull || deDispatchDelayedStart.Running)
                 return false;
+            
             SlopeRun = true;
             return true;
         }
@@ -134,9 +135,12 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var conditional = base.DispatchNormalScript(csdNum);
+            
             if (csdNum != 1U)
                 return conditional;
+            
             var scripts = GetScripts(csdNum);
+            
             return MakeConditionalMacro("Straighten box to the side")
                 .AddStatement(MakeConditionalBatch("Align while raise").AddStatement(scripts.TableUp).AddStatement(MakeConditionalStatement("PreAlign", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                     .AddGlobalTimeout(2000U).AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddOutputState(scripts.BeltsRun).AddOutputState(scripts.BeltsDir, PIN_STATE.INACTIVE))).AddStatement(
@@ -148,9 +152,11 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             if (csdNum == 1U)
                 return MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedBelts, csdNum, endDelay: 300U, middleMotorRun: scripts.MiddleRollersRun,
                     middleMotorDir: scripts.MiddleRollersDir);
+            
             return csdNum == 2U
                 ? MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedBelts, csdNum, endDelay: 300U, middleMotorRun: scripts.MiddleRollersRun)
                 : base.LoadAlternativeScript(csdNum);

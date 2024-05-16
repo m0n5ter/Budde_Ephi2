@@ -33,8 +33,8 @@ namespace PharmaProject.Locations
         public WeighingZone_Enter(string utcIp, uint locationNumber, string bs1Ip, string bs2Ip)
             : base(utcIp, locationNumber, 3U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("bs1 Loc:{0}", locationNumber), IPAddress.Parse(bs1Ip)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("bs2 Loc:{0}", locationNumber), IPAddress.Parse(bs2Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"bs1 Loc:{locationNumber}", IPAddress.Parse(bs1Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"bs2 Loc:{locationNumber}", IPAddress.Parse(bs2Ip)));
         }
 
         public string LastBarcode
@@ -48,7 +48,7 @@ namespace PharmaProject.Locations
                 if (string.IsNullOrEmpty(value))
                     Log("Last barcode cleared");
                 else
-                    Log(string.Format("Last barcode set to {0}", value));
+                    Log($"Last barcode set to {value}");
             }
         }
 
@@ -120,10 +120,10 @@ namespace PharmaProject.Locations
             var scripts = GetScripts(2U);
             loadAltInside = base.LoadAlternativeScript(2U);
             loadAltOutside = MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, inCsd2OccupiedAltFromOutside, 2U, middleMotorRun: scripts.MiddleRollersRun);
-            dispatchFromScale = MakeConditionalStatement(string.Format("Dispatch from scale (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(15000U)
+            dispatchFromScale = MakeConditionalStatement($"Dispatch from scale (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(15000U)
                 .AddOutputState(outScaleRun).AddOutputState(outPostScaleAcmLoad).AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(inScaleOccupied, PIN_STATE.INACTIVE).AddGuardBlock(1000U)
                 .AddGuardPin(inScaleOccupied).CloseBlock().CloseBlock();
-            LoadToScale = MakeConditionalStatement(string.Format("Load to scale (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(7000U).AddOutputState(outScaleRun)
+            LoadToScale = MakeConditionalStatement($"Load to scale (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(7000U).AddOutputState(outScaleRun)
                 .AddCondition(inScaleOccupied);
         }
 
@@ -145,13 +145,13 @@ namespace PharmaProject.Locations
             if (csdNum != 2U)
                 return MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.OccupiedRollers, csdNum, prevSegDispatch: scripts.UpstreamStartDispatching,
                     endDelay: 300U);
-            Conditional conditional1 = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", csdNum, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Conditional conditional1 = MakeConditionalStatement($"Auto load precondition CSD:{csdNum}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddCondition(inCsd2LoadNormalOccupied, PIN_STATE.INACTIVE).AddCondition(inCsd2OccupiedAltFromInside, PIN_STATE.INACTIVE)
                 .AddCondition(inCsd2OccupiedAltFromOutside, PIN_STATE.INACTIVE).AddCondition(scripts.LoadTriggerNormal).CloseBlock();
             var conditional2 = MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, inCsd2LoadNormalOccupied, csdNum,
                 prevSegDispatch: scripts.UpstreamStartDispatching);
-            csd2AutoLoad = MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", csdNum, LocationNumber)).AddStatement(conditional1).AddStatement(conditional2);
+            csd2AutoLoad = MakeConditionalMacro($"Auto load script CSD:{csdNum}, Loc:{LocationNumber}").AddStatement(conditional1).AddStatement(conditional2);
             return conditional2;
         }
 

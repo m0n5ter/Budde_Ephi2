@@ -38,8 +38,7 @@ public class SustainedExpectedClient : EndPoint
 
     public void ReplaceIp(string ipAddress)
     {
-        IPAddress address;
-        if (!IPAddress.TryParse(ipAddress, out address))
+        if (!IPAddress.TryParse(ipAddress, out var address))
             address = IPAddress.Parse("127.0.0.1");
         ReplaceIp(address);
     }

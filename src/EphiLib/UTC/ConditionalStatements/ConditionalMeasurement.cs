@@ -43,7 +43,7 @@ public class ConditionalMeasurement : Conditional, IBaseCondition
     private void SetRootCondition(MEASURING_CONDITION conditionType, IBaseCondition condition)
     {
         if (GetRootCondition(conditionType) != null)
-            throw new ArgumentException(string.Format("A condition for {0} in '{1}' was already given", Formatting.TitleCase(conditionType), Name));
+            throw new ArgumentException($"A condition for {Formatting.TitleCase(conditionType)} in '{Name}' was already given");
         switch (conditionType)
         {
             case MEASURING_CONDITION.MC_START:
@@ -118,9 +118,7 @@ public class ConditionalMeasurement : Conditional, IBaseCondition
         uint ms,
         BOOL_INTERPRET interpretation = BOOL_INTERPRET.AS_IS)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddTimeoutCondition(conditionType, outFunction, outMultiplier, interpretation);
     }
 
@@ -150,9 +148,7 @@ public class ConditionalMeasurement : Conditional, IBaseCondition
         uint ms,
         BOOL_INTERPRET interpretation = BOOL_INTERPRET.AS_IS)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddGuardBlock(conditionType, outFunction, outMultiplier, interpretation);
     }
 
@@ -163,9 +159,7 @@ public class ConditionalMeasurement : Conditional, IBaseCondition
 
     public ConditionalMeasurement AddGlobalTimeout(uint ms)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddGlobalTimeout(outFunction, outMultiplier);
     }
 
@@ -182,9 +176,7 @@ public class ConditionalMeasurement : Conditional, IBaseCondition
     internal void RaiseOnMeasurementReceived(MeasurementResult result)
     {
         var measurementCompleted = OnMeasurementCompleted;
-        if (measurementCompleted == null)
-            return;
-        measurementCompleted(this, result);
+        measurementCompleted?.Invoke(this, result);
     }
 
     public event Action<ConditionalMeasurement, MeasurementResult> OnMeasurementCompleted;

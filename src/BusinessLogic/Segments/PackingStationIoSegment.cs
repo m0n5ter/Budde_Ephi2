@@ -63,8 +63,7 @@ namespace PharmaProject.BusinessLogic.Segments
                 }
 
                 var segmentChanged = SegmentChanged;
-                if (segmentChanged != null)
-                    segmentChanged(this);
+                segmentChanged?.Invoke(this);
                 CheckValid.Start();
             }
         }
@@ -78,9 +77,7 @@ namespace PharmaProject.BusinessLogic.Segments
                     return;
                 route = value;
                 var segmentChanged = SegmentChanged;
-                if (segmentChanged == null)
-                    return;
-                segmentChanged(this);
+                segmentChanged?.Invoke(this);
             }
         }
 

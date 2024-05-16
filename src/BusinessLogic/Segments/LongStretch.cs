@@ -90,9 +90,9 @@ namespace PharmaProject.BusinessLogic.Segments
 
         private void InitScripts()
         {
-            ToteInserted = manualInsert.Utc.MakeConditionalStatement(string.Format("Long Stretch {0} Tote insert detection", logName), OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE, RUN_MODE.PERMANENTLY)
+            ToteInserted = manualInsert.Utc.MakeConditionalStatement($"Long Stretch {logName} Tote insert detection", OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE, RUN_MODE.PERMANENTLY)
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(manualInsert).AddGuardBlock(50U).AddGuardPin(manualInsert).CloseBlock().CloseBlock();
-            Flush = loadFromUS.Utc.MakeConditionalStatement(string.Format("Long Stretch {0} flush", logName), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Flush = loadFromUS.Utc.MakeConditionalStatement($"Long Stretch {logName} flush", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .AddTimeoutCondition(TIMEOUT_RANGE.TR_SEC, BP120_LOAD_TIMEOUT_Sec).AddOutputState(loadFromUS);
             Flush.OnStateChanged += Flush_OnStateChanged;
         }
@@ -225,9 +225,7 @@ namespace PharmaProject.BusinessLogic.Segments
         {
             log.Info(empty ? "Stretch turned empty" : (object)"Stretch got full");
             var onEmptyChanged = OnEmptyChanged;
-            if (onEmptyChanged == null)
-                return;
-            onEmptyChanged(empty);
+            onEmptyChanged?.Invoke(empty);
         }
     }
 }

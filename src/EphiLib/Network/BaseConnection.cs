@@ -60,7 +60,7 @@ public abstract class BaseConnection : IBaseConnection
         get
         {
             var delayedDisconnect = this.delayedDisconnect;
-            return delayedDisconnect == null ? 0U : delayedDisconnect.Delay_ms;
+            return delayedDisconnect?.Delay_ms ?? 0U;
         }
         set
         {

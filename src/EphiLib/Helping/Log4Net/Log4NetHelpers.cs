@@ -30,7 +30,7 @@ public static class Log4NetHelpers
     {
         var repository = (Hierarchy)LogManager.GetRepository();
         name = string.Concat(name.Split(Path.GetInvalidFileNameChars()));
-        path = string.Format("{0}.log", Path.Combine(path, name));
+        path = $"{Path.Combine(path, name)}.log";
         name = "ISO." + name;
         var name1 = name;
         var logger = repository.GetLogger(name1) as Logger;

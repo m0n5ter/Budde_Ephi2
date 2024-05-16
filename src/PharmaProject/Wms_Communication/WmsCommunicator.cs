@@ -110,14 +110,12 @@ namespace PharmaProject.Wms_Communication
         {
             var message = BaseMessage.ByteArrayToMessage(e.Buffer);
             LastMessageReceivedTime = DateTime.Now;
-            BaseLocation.FindLocation(message.location)?.Log(string.Format("Received function code {0}", message.functionCode));
+            BaseLocation.FindLocation(message.location)?.Log($"Received function code {message.functionCode}");
             if (message.functionCode == 0U)
                 return;
             Send(BaseMessage.MessageToByteArray(new Acknowledgement(message.counter)));
             var onReceived = OnReceived;
-            if (onReceived == null)
-                return;
-            onReceived(message);
+            onReceived?.Invoke(message);
         }
 
         public static bool Send(byte[] buffer)
@@ -132,7 +130,7 @@ namespace PharmaProject.Wms_Communication
                 Array.Reverse(array2);
             }
 
-            BaseLocation.FindLocation(BitConverter.ToUInt32(array2, 0))?.Log(string.Format("Sent function code {0}", BitConverter.ToUInt32(array1, 0)));
+            BaseLocation.FindLocation(BitConverter.ToUInt32(array2, 0))?.Log($"Sent function code {BitConverter.ToUInt32(array1, 0)}");
             return true;
         }
     }

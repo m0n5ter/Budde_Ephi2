@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.PackingLeaveSlopeLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
@@ -50,10 +44,13 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (value)
                     SlopeSleep.Start();
+
                 if (slopeRun == value)
                     return;
-                Log(string.Format("Slope {0}", value ? "start" : (object)"stop"));
+                
+                Log($"Slope {(value ? "start" : (object)"stop")}");
                 slopeRun = value;
+                
                 if (slopeRun)
                 {
                     SlopeSleep.Start();
@@ -78,6 +75,7 @@ namespace PharmaProject.BusinessLogic.Locations
                     return;
                 acmFull = value;
                 acmFullSet = DateTime.Now;
+                
                 if (acmFull)
                 {
                     if (LastAllowedAge < TimeSpan.FromMilliseconds(1000.0))
@@ -106,7 +104,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            DispatchToSlope = MakeConditionalStatement(string.Format("Dispatch to slope (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
+            DispatchToSlope = MakeConditionalStatement($"Dispatch to slope (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
                 .AddCondition(inDownstreamOcc, PIN_STATE.INACTIVE).AddOutputState(outDownstreamDispatch);
         }
 
@@ -126,8 +124,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             var slopeControl = SlopeControl;
             AcmFull = (slopeControl != null ? slopeControl.CanTransfer ? 1 : 0 : 0) == 0;
+            
             if (AcmFull)
                 return;
+            
             Evaluate();
         }
 
@@ -135,6 +135,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             Evaluate();
         }
 
@@ -142,7 +143,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!inDownstreamOcc.Active)
                 return;
+            
             var timeSpan = TimeSpan.FromMilliseconds(4500.0);
+            
             if (LastAllowedAge < timeSpan)
             {
                 ReEvaluate.Start();
@@ -151,8 +154,10 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 var slopeControl = SlopeControl;
                 AcmFull = (slopeControl != null ? slopeControl.CanTransfer ? 1 : 0 : 0) == 0;
+            
                 if (AcmFull)
                     return;
+                
                 if (AcmFullAge < timeSpan)
                 {
                     ReEvaluate.Start();

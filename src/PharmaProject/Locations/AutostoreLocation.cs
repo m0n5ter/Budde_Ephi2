@@ -85,7 +85,7 @@ namespace PharmaProject.Locations
         {
             base.InitScripts();
             var scripts = GetScripts(1U);
-            runBeltForCsdOrStartSegment = MakeConditionalStatement(string.Format("Auto run belt autostore (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_AT_CONDITION_TRUE, RUN_MODE.PERMANENTLY)
+            runBeltForCsdOrStartSegment = MakeConditionalStatement($"Auto run belt autostore (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_AT_CONDITION_TRUE, RUN_MODE.PERMANENTLY)
                 .AddLogicBlock(LOGIC_FUNCTION.OR).AddCondition(scripts.RollersRun).AddCondition(outStartSegmentRun).CloseBlock().AddOutputState(outBeltRun);
             dispatchToBelt = MakeConditionalStatement("Move segment 2 seconds", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddTimeoutCondition(2000U).AddOutputState(outStartSegmentRun);
             dispatchToBelt.OnStateChanged += DispatchToBelt_OnStateChanged;

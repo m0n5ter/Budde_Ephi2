@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.SmallStorageLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Net;
 using System.Text;
 using Ephi.Core.Helping;
@@ -38,8 +32,8 @@ namespace PharmaProject.BusinessLogic.Locations
             string BSRightIp)
             : base(utcIp_1, locationNumber, 3U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd1BS1 Loc:{0}", locationNumber), IPAddress.Parse(BSLeftIp)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd1BS2 Loc:{0}", locationNumber), IPAddress.Parse(BSRightIp)));
+            AddBarcodeScanner(new BarcodeScanner($"csd1BS1 Loc:{locationNumber}", IPAddress.Parse(BSLeftIp)));
+            AddBarcodeScanner(new BarcodeScanner($"csd1BS2 Loc:{locationNumber}", IPAddress.Parse(BSRightIp)));
             subLoc.ReplaceIp(IPAddress.Parse(utcIp_2));
             subLoc.inReturn_1_Btn.OnStateChanged += InReturn_1_Btn_OnStateChanged;
             occupiedTimeout = new DelayedEvent(TimeSpan.FromMilliseconds(3100.0), () => HandleCSD1());
@@ -73,8 +67,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd.State == SEGMENT_STATE.OCCUPIED)
                 occupiedTimeout.Start();
+
             if (csd.State != SEGMENT_STATE.DISPATCHING || !csd.Scripts.DispatchNormal.IsRunning)
                 return;
+            
             passThroughEval_csd2to3.Start();
         }
 
@@ -82,6 +78,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd.State != SEGMENT_STATE.DISPATCHING || !csd.Scripts.DispatchNormal.IsRunning)
                 return;
+            
             passThroughEval_csd3toAcm.Start();
         }
 
@@ -89,6 +86,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd.State != SEGMENT_STATE.LOADING)
                 return;
+            
             passThroughEval_csd3to4.Start();
         }
 
@@ -96,6 +94,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csd.State != SEGMENT_STATE.LOADING)
                 return;
+            
             passThroughEval_csd6.Start();
         }
 
@@ -127,19 +126,22 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             switch (csdNum)
             {
                 case 1:
                     var conditional1 = base.LoadNormalScript(csdNum);
-                    Conditional conditional2 = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", csdNum, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+                    Conditional conditional2 = MakeConditionalStatement($"Auto load precondition CSD:{csdNum}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                         .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts.RollersRun, PIN_STATE.INACTIVE)
                         .AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedRollers, PIN_STATE.INACTIVE)
                         .AddCondition(scripts.LoadTriggerNormal).CloseBlock();
-                    MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", csdNum, LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(conditional2).AddStatement(conditional1);
+                    MakeConditionalMacro($"Auto load script CSD:{csdNum}, Loc:{LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(conditional2).AddStatement(conditional1);
                     return conditional1;
+
                 case 2:
                 case 3:
                     return MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.OccupiedRollers, csdNum, middleMotorRun: scripts.MiddleRollersRun);
+                
                 default:
                     return null;
             }
@@ -148,11 +150,14 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, scripts.BeltsRun, scripts.OccupiedRollers, csdNum, endDelay: 1000U,
                     middleMotorRun: scripts.MiddleRollersRun);
+            
             if (csdNum != 3U)
                 return null;
+            
             var beltsRun1 = scripts.BeltsRun;
             var beltsDir = scripts.BeltsDir;
             var beltsRun2 = scripts.BeltsRun;
@@ -161,6 +166,7 @@ namespace PharmaProject.BusinessLogic.Locations
             var middleRollersRun = scripts.MiddleRollersRun;
             var startDispatching = scripts.UpstreamStartDispatching;
             var middleMotorRun = middleRollersRun;
+            
             return MakeDispatchStatement(beltsRun1, TABLE_POSITION.UP, beltsDir, MOTOR_DIR.CCW, beltsRun2, occupiedRollers, (uint)csdNum1, nextSegLoad: startDispatching, endDelay: 1000U,
                 middleMotorRun: middleMotorRun);
         }
@@ -168,6 +174,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 2U
                 ? MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedBelts, csdNum, prevSegDispatch: scripts.UpstreamStartDispatching,
                     endDelay: 750U)
@@ -178,7 +185,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (csdNum != 3U)
                 return base.DispatchNormalScript(csdNum);
+            
             var scripts = GetScripts(csdNum);
+            
             return MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.DispatchNormalSegmentOccupied, scripts.OccupiedRollers, csdNum,
                 timeOut: 15000U, nextSegLoad: scripts.DownstreamStartLoading);
         }
@@ -189,19 +198,24 @@ namespace PharmaProject.BusinessLogic.Locations
             uint value1)
         {
             var route = csd1.Route;
+            
             if (!barcode.Equals(route?.Barcode) || route.Destination != DESTINATION.TBD)
                 return;
+            
             switch (target)
             {
                 case WMS_TOTE_DIRECTION.DIRECTION_1:
                     route.Destination = DESTINATION.DISPATCH_CSD1;
                     break;
+            
                 case WMS_TOTE_DIRECTION.DIRECTION_2:
                     route.Destination = DESTINATION.DISPATCH_CSD2;
                     break;
+                
                 case WMS_TOTE_DIRECTION.DIRECTION_3:
                     route.Destination = DESTINATION.DISPATCH_CSD2_ALT;
                     break;
+                
                 case WMS_TOTE_DIRECTION.DIRECTION_4:
                     route.Destination = DESTINATION.DISPATCH_CSD1_ALT;
                     break;
@@ -214,12 +228,15 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (string.IsNullOrWhiteSpace(route?.Barcode))
                 return;
+            
             var direction = WMS_TOTE_DIRECTION.DIRECTION_1;
+            
             switch (route.Destination)
             {
                 case DESTINATION.DISPATCH_CSD2:
                     direction = WMS_TOTE_DIRECTION.DIRECTION_2;
                     break;
+            
                 case DESTINATION.DISPATCH_CSD2_ALT:
                     direction = WMS_TOTE_DIRECTION.DIRECTION_3;
                     break;
@@ -249,22 +266,28 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             GetScripts(1U);
             var route = csd1.Route;
-            var to = route != null ? route.Destination : DESTINATION.TBD;
+            var to = route?.Destination ?? DESTINATION.TBD;
+            
             switch (csd1.State)
             {
                 case SEGMENT_STATE.LOADING_PENDING:
                 case SEGMENT_STATE.LOADING:
                     if (csd1.Route == null)
                         csd1.Route = new Route(START.LOAD_CSD1);
+            
                     if (to == DESTINATION.TBD)
                         break;
+                    
                     Dispatch_CSD1(to);
                     break;
+                
                 case SEGMENT_STATE.OCCUPIED:
                     if (csd1.StateAge > TimeSpan.FromMilliseconds(WaitForWmsFeedbackMs) && (uint)to > 1U)
                         to = DESTINATION.DISPATCH_CSD1;
+                
                     if (to == DESTINATION.TBD)
                         break;
+                    
                     Dispatch_CSD1(to);
                     break;
             }
@@ -273,14 +296,18 @@ namespace PharmaProject.BusinessLogic.Locations
         private void HandleCSD2()
         {
             var scripts = GetScripts(2U);
+            
             switch (csd2.State)
             {
                 case SEGMENT_STATE.IDLE:
                     csd2.Route = null;
+            
                     if (!scripts.LoadTriggerAlternative.Active)
                         break;
+                    
                     csd2.LoadAlternative();
                     break;
+                
                 case SEGMENT_STATE.LOADING:
                     if (csd2.Scripts.LoadAlternative.IsRunning)
                     {
@@ -290,12 +317,15 @@ namespace PharmaProject.BusinessLogic.Locations
 
                     if (!csd3.IsIdle || csd1.State != SEGMENT_STATE.DISPATCHING || csd1.StateAge < TimeSpan.FromMilliseconds(1000.0) || !csd3.LoadNormal())
                         break;
+                
                     csd2.PassThrough();
                     csd3.Route = csd2.Route;
                     break;
+
                 case SEGMENT_STATE.OCCUPIED:
                     if (csd3.State != SEGMENT_STATE.IDLE || !csd3.LoadNormal())
                         break;
+                
                     csd2.DispatchNormal();
                     csd3.Route = csd2.Route;
                     break;
@@ -305,23 +335,30 @@ namespace PharmaProject.BusinessLogic.Locations
         private void HandleCSD3()
         {
             var scripts = GetScripts(3U);
+            
             switch (csd3.State)
             {
                 case SEGMENT_STATE.IDLE:
                     csd3.Route = null;
                     break;
+            
                 case SEGMENT_STATE.LOADING:
                     if (!csd3.Scripts.LoadNormal.IsRunning || !scripts.DispatchNormalSegmentOccupied.Inactive || csd2.State != SEGMENT_STATE.DISPATCHING ||
                         csd2.StateAge < TimeSpan.FromMilliseconds(1000.0))
                         break;
+                
                     var route = csd3.Route;
+                    
                     if ((route != null ? route.Destination != DESTINATION.DISPATCH_CSD1_ALT ? 1 : 0 : 1) == 0)
                         break;
+                    
                     csd3.PassThrough();
                     break;
+                
                 case SEGMENT_STATE.OCCUPIED:
                     var destination1 = csd3.Route?.Destination;
                     var destination2 = DESTINATION.DISPATCH_CSD1_ALT;
+                
                     if ((destination1.GetValueOrDefault() == destination2) & destination1.HasValue)
                     {
                         if (scripts.DispatchAlternativeSegmentOccupied.Inactive)
@@ -339,6 +376,7 @@ namespace PharmaProject.BusinessLogic.Locations
 
                     if (scripts.DispatchNormalSegmentOccupied.Inactive && csd3.DispatchNormal())
                         break;
+                    
                     ReEvaluate.Start();
                     break;
             }
@@ -350,6 +388,7 @@ namespace PharmaProject.BusinessLogic.Locations
             var scripts = csd4.Scripts;
             var route = csd4.Route;
             var flag = (route != null ? (int)route.Destination : 3) == 4;
+            
             switch (subLoc.csd4.State)
             {
                 case SEGMENT_STATE.LOADING:
@@ -357,6 +396,7 @@ namespace PharmaProject.BusinessLogic.Locations
                         break;
                     subLoc.csd4.PassThrough();
                     break;
+            
                 case SEGMENT_STATE.OCCUPIED:
                     if (flag)
                     {
@@ -368,6 +408,7 @@ namespace PharmaProject.BusinessLogic.Locations
 
                     if (!scripts.DispatchNormalSegmentOccupied.Inactive || !subLoc.csd4.DispatchNormal())
                         break;
+                
                     subLoc.csd4.Route = null;
                     break;
             }
@@ -377,6 +418,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (subLoc.csd5.State != SEGMENT_STATE.OCCUPIED || !subLoc.GetScripts(2U).DispatchNormalSegmentOccupied.Inactive)
                 return;
+
             subLoc.csd5.DispatchNormal();
         }
 
@@ -384,6 +426,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             var csd6 = subLoc.csd6;
             var scripts = csd6.Scripts;
+            
             switch (csd6.State)
             {
                 case SEGMENT_STATE.IDLE:
@@ -396,6 +439,7 @@ namespace PharmaProject.BusinessLogic.Locations
 
                     if (scripts.LoadTriggerAlternative.Inactive)
                         break;
+            
                     if (!scripts.DispatchAlternativeSegmentOccupied.Inactive)
                     {
                         csd6.LoadAlternative();
@@ -404,11 +448,13 @@ namespace PharmaProject.BusinessLogic.Locations
 
                     csd6.PassThrough();
                     break;
+                
                 case SEGMENT_STATE.LOADING:
                     if (!scripts.LoadAlternative.IsRunning || !scripts.DispatchAlternativeSegmentOccupied.Inactive)
                         break;
                     csd6.PassThrough();
                     break;
+                
                 case SEGMENT_STATE.OCCUPIED:
                     if (!scripts.DispatchAlternativeSegmentOccupied.Inactive)
                         break;
@@ -421,44 +467,56 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             var route = csd1.Route ?? new Route(START.LOAD_CSD1, to);
             route.Destination = to;
+            
             switch (to)
             {
                 case DESTINATION.DISPATCH_CSD1:
                 case DESTINATION.DISPATCH_CSD1_ALT:
                     if (!csd2.IsIdle)
                         return;
+            
                     if (csd1.IsOccupied)
                     {
                         csd2.Route = route;
+                    
                         if (!csd2.LoadNormal() || !csd1.DispatchNormal())
                             return;
+                        
                         break;
                     }
 
                     if (Helpers.Contains(csd1.State, SEGMENT_STATE.LOADING_PENDING, SEGMENT_STATE.LOADING))
                     {
                         csd2.Route = route;
+                        
                         if (!csd2.LoadNormal() || !csd1.PassThrough())
                             return;
                     }
 
                     break;
+
                 case DESTINATION.DISPATCH_CSD2:
                 case DESTINATION.DISPATCH_CSD2_ALT:
                     if (!subLoc.csd4.IsIdle || (route.Destination == DESTINATION.DISPATCH_CSD2_ALT && !subLoc.csd5.IsIdle) || !csd1.IsOccupied)
                         return;
+                
                     subLoc.csd4.Route = route;
+                    
                     if (!subLoc.csd4.LoadAlternative() || !csd1.DispatchAlternative())
                         return;
+                    
                     break;
+                
                 default:
                     throw new ArgumentException("Illegal dispatch destination");
             }
 
             if (csd1.Route != null)
                 DispatchWmsFeedback(csd1.Route);
+
             if (occupiedTimeout.Running)
                 occupiedTimeout.Stop();
+            
             csd1.Route = null;
         }
 
@@ -480,6 +538,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             buttonPressPending = true;
             TriggerEvaluate(pin);
         }

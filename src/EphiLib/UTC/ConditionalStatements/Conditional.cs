@@ -157,9 +157,9 @@ public abstract class Conditional
 
     public bool IsTimedOut => LastStatus == CONDITIONAL_STATE.TIMED_OUT;
 
-    public string IndexName => string.Format("[{0:D2}] {1}", Index, Name);
+    public string IndexName => $"[{Index:D2}] {Name}";
 
-    public string IndexNameStatus => string.Format("{0} ({1}-{2}onfirmed)", IndexName, Status, StateUnconfirmed ? "Unc" : (object)"C");
+    public string IndexNameStatus => $"{IndexName} ({Status}-{(StateUnconfirmed ? "Unc" : (object)"C")}onfirmed)";
 
     protected byte ConditionalInterpretationByte
     {
@@ -244,8 +244,7 @@ public abstract class Conditional
     private void AsyncSetState(CONDITIONAL_STATE newValue)
     {
         var stateAboutToChange = OnStateAboutToChange;
-        if (stateAboutToChange != null)
-            stateAboutToChange(this, newValue);
+        stateAboutToChange?.Invoke(this, newValue);
         lock (unhandledStates)
         {
             unhandledStates.Enqueue(newValue);
@@ -298,8 +297,7 @@ public abstract class Conditional
 
                     stateChanged = DateTime.Now;
                     var onStateChanged = OnStateChanged;
-                    if (onStateChanged != null)
-                        onStateChanged(this);
+                    onStateChanged?.Invoke(this);
                 }
                 catch (Exception ex)
                 {

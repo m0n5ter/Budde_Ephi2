@@ -41,9 +41,7 @@ public class LogicBlock<Owner> : CompoundCondition where Owner : IBaseCondition
 
     public LogicBlock<Owner> AddTimeoutCondition(uint ms, BOOL_INTERPRET interpretation = BOOL_INTERPRET.AS_IS)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddTimeoutCondition(outFunction, outMultiplier, interpretation);
     }
 
@@ -70,9 +68,7 @@ public class LogicBlock<Owner> : CompoundCondition where Owner : IBaseCondition
 
     public GuardBlock<LogicBlock<Owner>> AddGuardBlock(uint ms, BOOL_INTERPRET interpretation = BOOL_INTERPRET.AS_IS)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddGuardBlock(outFunction, outMultiplier, interpretation);
     }
 

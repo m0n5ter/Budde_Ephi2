@@ -22,13 +22,13 @@ namespace PharmaProject.Locations
         private OutPin inReturn3_Run;
 
         internal SmallStorageSublocation(string ip, SmallStorageLocation parent)
-            : base(ip, string.Format("{0}sub", parent.LocationNumber), 3U)
+            : base(ip, $"{parent.LocationNumber}sub", 3U)
         {
             csd4 = new CSD(parent.LocationNumber, 4U, GetScripts(1U), parent);
             csd5 = new CSD(parent.LocationNumber, 5U, GetScripts(2U), parent);
             csd6 = new CSD(parent.LocationNumber, 6U, GetScripts(3U), parent);
-            OnConditionalStatusChanged += obj => parent.Log(string.Format("\t{0} => {1}", obj.Name, obj.Status));
-            inReturn3_Run.OnStateChanged += op => parent.Log(string.Format("  BUTTON => {0}", op.State));
+            OnConditionalStatusChanged += obj => parent.Log($"\t{obj.Name} => {obj.Status}");
+            inReturn3_Run.OnStateChanged += op => parent.Log($"  BUTTON => {op.State}");
         }
 
         protected override InPin[] ResetEmergencyPins
@@ -78,9 +78,9 @@ namespace PharmaProject.Locations
         {
             var scripts = GetScripts(csdNum);
             return csdNum == 3U
-                ? MakeConditionalBatch(string.Format("Load CSD 6 from IO conveyor (Loc:{0}, CSD:{1})", LocId, csdNum))
+                ? MakeConditionalBatch($"Load CSD 6 from IO conveyor (Loc:{LocId}, CSD:{csdNum})")
                     .AddStatement(MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.OccupiedRollers, csdNum, endDelay: 1000U)).AddStatement(
-                        MakeConditionalStatement(string.Format("Disp IO segment to CSD 6 (Loc:{0}, CSD:{1})", LocId, csdNum), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+                        MakeConditionalStatement($"Disp IO segment to CSD 6 (Loc:{LocId}, CSD:{csdNum})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                             .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.OccupiedRollers).AddGuardBlock(1000U).AddGuardPin(scripts.OccupiedRollers).CloseBlock().CloseBlock()
                             .AddOutputState(inReturn3_Run))
                 : (Conditional)null;
@@ -122,9 +122,9 @@ namespace PharmaProject.Locations
             if (csdNum != 1U && csdNum != 3U)
                 return null;
             var scripts = GetScripts(csdNum);
-            return scripts == null || scripts.LoadAlternative == null || scripts.DispatchAlternative == null
+            return scripts?.LoadAlternative == null || scripts.DispatchAlternative == null
                 ? null
-                : (Conditional)MakeConditionalMacro(string.Format("Pass through alternative (Loc:{0}, CSD:{1})", LocId, csdNum)).AddStatement(scripts.LoadAlternative)
+                : (Conditional)MakeConditionalMacro($"Pass through alternative (Loc:{LocId}, CSD:{csdNum})").AddStatement(scripts.LoadAlternative)
                     .AddStatement(scripts.DispatchAlternative);
         }
 

@@ -50,8 +50,7 @@ public class DelayedEvent
     {
         debounceTimer.Enabled = false;
         var handler = this.handler;
-        if (handler != null)
-            handler();
+        handler?.Invoke();
         if (!runOnce)
             return;
         Dispose();

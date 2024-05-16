@@ -54,7 +54,7 @@ namespace PharmaProject.Locations
                     SlopeSleep.Start();
                 if (slopeRun == value)
                     return;
-                Log(string.Format("Slope {0}", value ? "start" : (object)"stop"));
+                Log($"Slope {(value ? "start" : (object)"stop")}");
                 slopeRun = value;
                 if (slopeRun)
                 {
@@ -108,7 +108,7 @@ namespace PharmaProject.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            DispatchToSlope = MakeConditionalStatement(string.Format("Dispatch to slope (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
+            DispatchToSlope = MakeConditionalStatement($"Dispatch to slope (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
                 .AddCondition(inDownstreamOcc, PIN_STATE.INACTIVE).AddOutputState(outDownstreamDispatch);
         }
 

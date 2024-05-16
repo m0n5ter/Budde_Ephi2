@@ -62,7 +62,7 @@ namespace PharmaProject.BusinessLogic.Segments
             {
                 if (job == value)
                     return;
-                parent.Log(string.Format("PreCsd {0}=>{1}", State, value));
+                parent.Log($"PreCsd {State}=>{value}");
                 job = value;
                 Evaluate();
             }
@@ -104,9 +104,8 @@ namespace PharmaProject.BusinessLogic.Segments
             }
 
             var segmentStateChanged = OnPrintStationSegmentStateChanged;
-            if (segmentStateChanged != null)
-                segmentStateChanged(this);
-            parent.Log(string.Format("CSD state changed to : {0}", State));
+            segmentStateChanged?.Invoke(this);
+            parent.Log($"CSD state changed to : {State}");
             Evaluate();
             base.HandleStateChanged();
         }

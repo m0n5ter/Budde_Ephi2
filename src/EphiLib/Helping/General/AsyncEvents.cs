@@ -35,7 +35,7 @@ public class AsyncEvents
                     while (exception?.GetType() == typeof(TargetInvocationException) && exception.InnerException != null)
                         exception = exception.InnerException;
                     var instance = (Exception)Activator.CreateInstance(exception.GetType(),
-                        string.Format("Exception in asynchronously called eventhandler '{0}'\r\n - {1}", iar.AsyncState, exception.Message), ex);
+                        $"Exception in asynchronously called eventhandler '{iar.AsyncState}'\r\n - {exception.Message}", ex);
                     if (errorHandler == null)
                         throw instance;
                     errorHandler(instance);

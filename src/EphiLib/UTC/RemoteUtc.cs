@@ -74,11 +74,11 @@ public class RemoteUtc : SustainedExpectedClient
         Init();
     }
 
-    public string HardwareVersion => string.Format("{0}.{1}", hardwareVersionMajor, hardwareVersionMinor);
+    public string HardwareVersion => $"{hardwareVersionMajor}.{hardwareVersionMinor}";
 
-    public string FirmwareVersion => string.Format("{0}.{1}", firmwareVersionMajor, firmwareVersionMinor);
+    public string FirmwareVersion => $"{firmwareVersionMajor}.{firmwareVersionMinor}";
 
-    public string InterfaceVersion => string.Format("{0}.{1}", interfaceVersionMajor, interfaceVersionMinor);
+    public string InterfaceVersion => $"{interfaceVersionMajor}.{interfaceVersionMinor}";
 
     public bool HardEmergency => remote.hardEmergency;
 
@@ -169,7 +169,7 @@ public class RemoteUtc : SustainedExpectedClient
         get
         {
             var delayedUnoperational = this.delayedUnoperational;
-            return delayedUnoperational == null ? 0U : delayedUnoperational.Delay_ms;
+            return delayedUnoperational?.Delay_ms ?? 0U;
         }
         set
         {
@@ -199,13 +199,11 @@ public class RemoteUtc : SustainedExpectedClient
             operational = value;
             OperationalChanged();
             var operationalChanged = OnOperationalChanged;
-            if (operationalChanged == null)
-                return;
-            operationalChanged(this);
+            operationalChanged?.Invoke(this);
         }
     }
 
-    public string StringVersions => string.Format("\nHardware version: {0} \t\nFirmware version: {1} \t\nInterface version: {2}", HardwareVersion, FirmwareVersion, InterfaceVersion);
+    public string StringVersions => $"\nHardware version: {HardwareVersion} \t\nFirmware version: {FirmwareVersion} \t\nInterface version: {InterfaceVersion}";
 
     public bool HoldUpdates
     {
@@ -359,8 +357,7 @@ public class RemoteUtc : SustainedExpectedClient
         statusChangedAt = DateTime.Now;
         Operational = Status == UTC_STATUS.OPERATIONAL;
         var onStatusChanged = OnStatusChanged;
-        if (onStatusChanged != null)
-            onStatusChanged(this);
+        onStatusChanged?.Invoke(this);
         StatusChanged();
     }
 
@@ -423,9 +420,7 @@ public class RemoteUtc : SustainedExpectedClient
     protected virtual void HardEmrgChanged()
     {
         var onHardEmrgChanged = OnHardEmrgChanged;
-        if (onHardEmrgChanged == null)
-            return;
-        onHardEmrgChanged(this);
+        onHardEmrgChanged?.Invoke(this);
     }
 
     public event Action<RemoteUtc> OnSoftEmrgChanged;
@@ -433,9 +428,7 @@ public class RemoteUtc : SustainedExpectedClient
     protected virtual void SoftEmrgChanged()
     {
         var onSoftEmrgChanged = OnSoftEmrgChanged;
-        if (onSoftEmrgChanged == null)
-            return;
-        onSoftEmrgChanged(this);
+        onSoftEmrgChanged?.Invoke(this);
     }
 
     public void LogVersions()
@@ -509,8 +502,7 @@ public class RemoteUtc : SustainedExpectedClient
         if (fm.Function != UTC_FUNCTION.CONFIRM || payload.Length < 1)
             return payload;
         var indices = Protocol.GetIndices(ref payload);
-        if (indices != null)
-            indices.ToList().ForEach(i => Acknowledged(i));
+        indices?.ToList().ForEach(i => Acknowledged(i));
         return payload;
     }
 
@@ -920,7 +912,7 @@ public class RemoteUtc : SustainedExpectedClient
                     }
                     catch (Exception ex)
                     {
-                        log.Error(string.Format("Error uploading conditional {0}", m.Name), ex);
+                        log.Error($"Error uploading conditional {m.Name}", ex);
                         throw;
                     }
                 }
@@ -951,7 +943,7 @@ public class RemoteUtc : SustainedExpectedClient
 
     private void ApplyValidState(Conditional cnd, CONDITIONAL_REMOTE_STATE status)
     {
-        log.InfoFormat("{0}\t{1}", string.Format("{0} => {1}", Formatting.TitleCase(cnd.Status), Formatting.TitleCase(status)).PadRight(35), cnd.Name);
+        log.InfoFormat("{0}\t{1}", $"{Formatting.TitleCase(cnd.Status)} => {Formatting.TitleCase(status)}".PadRight(35), cnd.Name);
         cnd.Status = (CONDITIONAL_STATE)status;
     }
 

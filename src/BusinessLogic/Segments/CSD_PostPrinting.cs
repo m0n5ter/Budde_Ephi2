@@ -63,9 +63,7 @@ namespace PharmaProject.BusinessLogic.Segments
         {
             base.HandleStateChanged();
             var segmentStateChanged = OnPrintStationSegmentStateChanged;
-            if (segmentStateChanged == null)
-                return;
-            segmentStateChanged(this);
+            segmentStateChanged?.Invoke(this);
         }
     }
 }

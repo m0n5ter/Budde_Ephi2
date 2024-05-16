@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.LabelPrinterLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Net;
 using System.Text;
 using Ephi.Core.Helping;
@@ -80,6 +74,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (rebound == null)
                 return;
+
             rebound.s4 = s4;
             rebound.CsdEndRebound = ReboundEndCsd;
             s4.DownstreamNeighbor = rebound.PostPrintCsd;
@@ -114,13 +109,16 @@ namespace PharmaProject.BusinessLogic.Locations
             base.InitScripts();
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
-            Conditional conditional = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", 1, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            
+            Conditional conditional = MakeConditionalStatement($"Auto load precondition CSD:{1}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts1.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts1.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LoadTriggerNormal).AddCondition(scripts2.OccupiedRollers, PIN_STATE.INACTIVE).AddCondition(scripts2.LiftRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts2.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts2.RollersRun, PIN_STATE.INACTIVE).CloseBlock();
-            autoLoadCsd1 = MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", 1, LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(conditional)
+            
+            autoLoadCsd1 = MakeConditionalMacro($"Auto load script CSD:{1}, Loc:{LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(conditional)
                 .AddStatement(scripts1.LoadNormal);
+            
             autoLoadCsd1.OnStateChanged += Script_OnStateChanged;
         }
 
@@ -133,8 +131,10 @@ namespace PharmaProject.BusinessLogic.Locations
         private void prn2SegmentStateChanged(IPrintStationSegment seg)
         {
             LogIoSegState(seg);
+            
             if (Helpers.Contains(seg.State, SEGMENT_STATE.DISPATCHING, SEGMENT_STATE.DISPATCHING_LOADING))
                 BarcodeTrigger?.Run();
+            
             Evaluate();
         }
 
@@ -157,6 +157,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeLoadStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.OccupiedRollers, csdNum, prevSegDispatch: scripts.UpstreamStartDispatching)
                 : base.LoadNormalScript(csdNum);
@@ -165,6 +166,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional LoadAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeLoadStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CW, scripts.OccupiedBelts, csdNum, endDelay: 400U, middleMotorRun: scripts.MiddleRollersRun,
                     middleMotorDir: scripts.MiddleRollersDir)
@@ -174,6 +176,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.RollersRun, scripts.OccupiedRollers, csdNum, endDelay: 100U)
                 : null;
@@ -182,6 +185,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchAlternativeScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 2U
                 ? MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, scripts.DispatchAlternativeSegmentOccupied, scripts.OccupiedRollers, csdNum,
                     middleMotorRun: scripts.MiddleRollersRun)
@@ -191,16 +195,17 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void RequestWmsDirection(string barcode)
         {
             BarcodeSent();
+            
             if (!prn1.DeviceReady && !prn2.DeviceReady)
             {
-                Log(string.Format("Both printers inactive. passthrough for barcode:{0} (loc:{1})", barcode, LocationNumber));
+                Log($"Both printers inactive. passthrough for barcode:{barcode} (loc:{LocationNumber})");
                 PrePrintCsd.Job = PrintSegJob.Make(PRINT_SEG_JOB_TYPE.NO_PRINT, barcode);
             }
             else
             {
                 var printer1Available = prn1.DeviceReady && (!prn2.DeviceReady || whereToPrint++ % 4U > 1U);
                 PrePrintCsd.Job = PrintSegJob.Make(printer1Available ? PRINT_SEG_JOB_TYPE.PRINT_AT_1 : PRINT_SEG_JOB_TYPE.PRINT_AT_2, barcode);
-                Log(string.Format("Requesting printer for barcode:{0} (loc:{1})", barcode, LocationNumber));
+                Log($"Requesting printer for barcode:{barcode} (loc:{LocationNumber})");
                 WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(printer1Available, !printer1Available, false, false, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
             }
         }
@@ -216,6 +221,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!csd2.IsOccupied || !csd1.IsIdle || !csd1.LoadAlternative())
                 return;
+            
             PrePrintCsd.Job = PrintSegJob.Make(PRINT_SEG_JOB_TYPE.NO_PRINT);
             csd2.DispatchAlternative();
         }
@@ -231,6 +237,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             PrintStationIoSegment stationIoSegment1;
             PRINT_SEG_JOB_TYPE printSegJobType;
+            
             if (prn == prn1)
             {
                 stationIoSegment1 = s1;
@@ -246,10 +253,12 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 var stationIoSegment2 = stationIoSegment1;
                 var job = stationIoSegment1.Job;
-                var num = (job != null ? job.JobType : PRINT_SEG_JOB_TYPE.NO_PRINT) != printSegJobType ? 1 : 0;
+                var num = (job?.JobType ?? PRINT_SEG_JOB_TYPE.NO_PRINT) != printSegJobType ? 1 : 0;
                 stationIoSegment2.AllowDispatch = num != 0;
+            
                 if (stationIoSegment1.AllowDispatch || !prn.DeviceReady)
                     return;
+                
                 switch (prn.ApplyingState)
                 {
                     case APPLYING_STATE.WAITING_FOR_PRINT:
@@ -262,12 +271,15 @@ namespace PharmaProject.BusinessLogic.Locations
 
                         ReEvaluate.Start();
                         break;
+                
                     case APPLYING_STATE.LABEL_READY:
                         prn.ApplyLabel();
                         break;
+                    
                     case APPLYING_STATE.APPLYING_READY:
                         stationIoSegment1.Job.JobType = PRINT_SEG_JOB_TYPE.PRINT_SUCCESS;
                         break;
+                    
                     case APPLYING_STATE.APPLYING_FAILED:
                         log.WarnFormat("Applying failed on printer {0} withing 10 sec. Moving on", Formatting.TitleCase(printSegJobType));
                         stationIoSegment1.Job.JobType = PRINT_SEG_JOB_TYPE.PRINT_FAILED;
@@ -276,6 +288,7 @@ namespace PharmaProject.BusinessLogic.Locations
 
                 if (stationIoSegment1.Job.JobType == printSegJobType)
                     return;
+                
                 prn.Reset();
                 stationIoSegment1.AllowDispatch = true;
             }
@@ -293,11 +306,13 @@ namespace PharmaProject.BusinessLogic.Locations
                 case FUNCTION_CODES.FEHLER_LABELDRUCK:
                     PrePrintCsd.SetJobType(Encoding.ASCII.GetString((message as FehlerLabeldruck).Barcode).TrimEnd(new char[1]), PRINT_SEG_JOB_TYPE.NO_PRINT);
                     break;
+                
                 case FUNCTION_CODES.LABELDRUCK_ERFOLGREICH:
                     var labeldruckErfolgreich = message as LabeldruckErfolgreich;
                     var forBarcode = Encoding.ASCII.GetString(labeldruckErfolgreich.Barcode).TrimEnd(new char[1]);
                     PrePrintCsd.GetJobType(forBarcode);
                     var jobType = PrePrintCsd.GetJobType(forBarcode);
+                
                     if (jobType.HasValue)
                         switch (jobType.GetValueOrDefault())
                         {
@@ -308,10 +323,8 @@ namespace PharmaProject.BusinessLogic.Locations
                                 if (!labeldruckErfolgreich.UseLabelPress2) PrePrintCsd.SetJobType(forBarcode, PRINT_SEG_JOB_TYPE.NO_PRINT);
                                 break;
                         }
-                    else
-                        break;
-
                     break;
+
                 default:
                     return false;
             }

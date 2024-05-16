@@ -58,7 +58,7 @@ namespace PharmaProject
 
         public static bool BarcodeScannedUpdate(uint locationNumber, string barcode)
         {
-            return Send(string.Format(barcodeScannedTopic, locationNumber), string.Format("{{ \"barcode\": \"{0}\", \"tag\": \"{1}\" }}", barcode, locationNumber));
+            return Send(string.Format(barcodeScannedTopic, locationNumber), $"{{ \"barcode\": \"{barcode}\", \"tag\": \"{locationNumber}\" }}");
         }
 
         public static bool DirectionRequestedUpdate(
@@ -67,7 +67,7 @@ namespace PharmaProject
             WMS_TOTE_DIRECTION direction)
         {
             return Send(string.Format(directionRequestedTopic, locationNumber),
-                string.Format("{{ \"barcode\": \"{0}\", \"direction\": \"{1}\", \"tag\": \"{2}\" }}", barcode, (uint)direction, locationNumber));
+                $"{{ \"barcode\": \"{barcode}\", \"direction\": \"{(uint)direction}\", \"tag\": \"{locationNumber}\" }}");
         }
 
         public static bool DirectionSentUpdate(
@@ -76,7 +76,7 @@ namespace PharmaProject
             WMS_TOTE_DIRECTION direction)
         {
             return Send(string.Format(directionSentTopic, locationNumber),
-                string.Format("{{ \"barcode\": \"{0}\", \"direction\": \"{1}\", \"tag\": \"{2}\" }}", barcode, (uint)direction, locationNumber));
+                $"{{ \"barcode\": \"{barcode}\", \"direction\": \"{(uint)direction}\", \"tag\": \"{locationNumber}\" }}");
         }
 
         private static bool Send(string topic, string message)

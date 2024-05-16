@@ -231,9 +231,9 @@ namespace PharmaProject.UTC
         protected virtual Conditional PassThroughScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
-            return scripts == null || scripts.LoadNormal == null || scripts.DispatchNormal == null
+            return scripts?.LoadNormal == null || scripts.DispatchNormal == null
                 ? null
-                : (Conditional)MakeConditionalMacro(string.Format("Pass through (Loc:{0}, CSD:{1})", LocId, csdNum)).AddStatement(scripts.LoadNormal).AddStatement(scripts.DispatchNormal);
+                : (Conditional)MakeConditionalMacro($"Pass through (Loc:{LocId}, CSD:{csdNum})").AddStatement(scripts.LoadNormal).AddStatement(scripts.DispatchNormal);
         }
 
         protected virtual void InitScripts()
@@ -294,7 +294,7 @@ namespace PharmaProject.UTC
             nextSegLoad = nextSegLoad ?? OutPin.Dummy;
             middleMotorRun = middleMotorRun ?? OutPin.Dummy;
             middleMotorDir = middleMotorDir ?? OutPin.Dummy;
-            var str = string.Format(" {0} {1} (Loc:{2}, CSD:{3})", pos == TABLE_POSITION.DOWN ? "Rollers" : (object)"Belts", motorDir == MOTOR_DIR.CW ? "CW" : (object)"CCW", LocId, csdNum);
+            var str = $" {(pos == TABLE_POSITION.DOWN ? "Rollers" : (object)"Belts")} {(motorDir == MOTOR_DIR.CW ? "CW" : (object)"CCW")} (Loc:{LocId}, CSD:{csdNum})";
             var conditional1 = pos == TABLE_POSITION.DOWN ? GetScripts(csdNum).TableDown : GetScripts(csdNum).TableUp;
             Conditional conditional2 = MakeConditionalStatement("Move 1" + str, OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddOutputState(motor).AddOutputState(nextSegLoad)
                 .AddOutputState(middleMotorRun).AddOutputState(middleMotorDir).AddOutputState(dir, motorDir == MOTOR_DIR.CCW ? PIN_STATE.ACTIVE : PIN_STATE.INACTIVE).AddLogicBlock(LOGIC_FUNCTION.AND)
@@ -328,7 +328,7 @@ namespace PharmaProject.UTC
             prevSegDispatch = prevSegDispatch ?? OutPin.Dummy;
             middleMotorRun = middleMotorRun ?? OutPin.Dummy;
             middleMotorDir = middleMotorDir ?? OutPin.Dummy;
-            var str = string.Format(" {0} {1} (Loc:{2}, CSD:{3})", pos == TABLE_POSITION.DOWN ? "Rollers" : (object)"Belts", motorDir == MOTOR_DIR.CW ? "CW" : (object)"CCW", LocId, csdNum);
+            var str = $" {(pos == TABLE_POSITION.DOWN ? "Rollers" : (object)"Belts")} {(motorDir == MOTOR_DIR.CW ? "CW" : (object)"CCW")} (Loc:{LocId}, CSD:{csdNum})";
             var conditional1 = pos == TABLE_POSITION.DOWN ? GetScripts(csdNum).TableDown : GetScripts(csdNum).TableUp;
             Conditional conditional2 = MakeConditionalStatement("Move 1" + str, OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(timeOut).AddOutputState(motor)
                 .AddOutputState(prevSegDispatch).AddOutputState(middleMotorRun).AddOutputState(middleMotorDir).AddOutputState(dir, motorDir == MOTOR_DIR.CCW ? PIN_STATE.ACTIVE : PIN_STATE.INACTIVE)
@@ -362,7 +362,7 @@ namespace PharmaProject.UTC
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", Formatting.TitleCase(LocId), Status);
+            return $"{Formatting.TitleCase(LocId)}: {Status}";
         }
 
         protected override void StatusChanged()

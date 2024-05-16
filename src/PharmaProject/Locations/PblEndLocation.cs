@@ -34,21 +34,21 @@ namespace PharmaProject.Locations
             base.InitScripts();
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
-            loadDispatch = MakeConditionalBatch(string.Format(" location {0}, Load and dispatch CSD 1 => 2", LocationNumber)).AddStatement(scripts1.DispatchAlternative)
+            loadDispatch = MakeConditionalBatch($" location {LocationNumber}, Load and dispatch CSD 1 => 2").AddStatement(scripts1.DispatchAlternative)
                 .AddStatement(scripts2.LoadAlternative);
-            MakeConditionalMacro(string.Format("Autonomous load location {0}", LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(
-                MakeConditionalStatement(string.Format("Autonomous load trigger location {0}", LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            MakeConditionalMacro($"Autonomous load location {LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(
+                MakeConditionalStatement($"Autonomous load trigger location {LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                     .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts1.LoadTriggerNormal).AddCondition(scripts1.BeltsRun, PIN_STATE.INACTIVE)
                     .AddCondition(scripts1.RollersRun, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedRollers, PIN_STATE.INACTIVE).CloseBlock()).AddStatement(scripts1.LoadNormal);
-            MakeConditionalMacro(string.Format("Autonomous carry over location {0}", LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(
-                    MakeConditionalStatement(string.Format("Autonomous carry over trigger  location {0}", LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            MakeConditionalMacro($"Autonomous carry over location {LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(
+                    MakeConditionalStatement($"Autonomous carry over trigger  location {LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                         .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts1.OccupiedRollers).AddCondition(scripts1.BeltsRun, PIN_STATE.INACTIVE)
                         .AddCondition(scripts1.RollersRun, PIN_STATE.INACTIVE)
                         .AddCondition(scripts2.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts2.RollersRun, PIN_STATE.INACTIVE).AddCondition(scripts2.OccupiedBelts, PIN_STATE.INACTIVE)
                         .CloseBlock())
                 .AddStatement(loadDispatch);
-            MakeConditionalMacro(string.Format("Autonomous dispatch location {0}", LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(
-                MakeConditionalStatement(string.Format("Autonomous dispatch trigger location {0}", LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            MakeConditionalMacro($"Autonomous dispatch location {LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(
+                MakeConditionalStatement($"Autonomous dispatch trigger location {LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                     .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts2.DispatchNormalSegmentOccupied, PIN_STATE.INACTIVE).AddCondition(scripts2.BeltsRun, PIN_STATE.INACTIVE)
                     .AddCondition(scripts2.RollersRun, PIN_STATE.INACTIVE).AddCondition(scripts2.OccupiedBelts).CloseBlock()).AddStatement(scripts2.DispatchNormal);
         }

@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.AutostoreLeaveSlope
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
@@ -39,8 +33,11 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            DispatchToSlope = MakeConditionalStatement(string.Format("Dispatch to slope (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
-                .AddCondition(inAcmDownstreamOcc, PIN_STATE.INACTIVE).AddOutputState(outDownstreamDispatch);
+            
+            DispatchToSlope = MakeConditionalStatement($"Dispatch to slope (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+                .AddGlobalTimeout(5000U)
+                .AddCondition(inAcmDownstreamOcc, PIN_STATE.INACTIVE)
+                .AddOutputState(outDownstreamDispatch);
         }
 
         public override void DoEvaluate()
@@ -59,6 +56,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+
             Evaluate();
         }
 
@@ -66,9 +64,12 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!inAcmDownstreamOcc.Active || deWaitNewDespatch.Running)
                 return;
+            
             var slopeControl = SlopeControl;
+            
             if ((slopeControl != null ? slopeControl.CanTransfer ? 1 : 0 : 0) == 0)
                 return;
+            
             deWaitNewDespatch.Start();
             DispatchToSlope.Run();
         }

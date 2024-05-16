@@ -46,9 +46,7 @@ public class Mqtt_Client
             StateAge = DateTime.Now;
             state = value;
             var onStateChanged = OnStateChanged;
-            if (onStateChanged == null)
-                return;
-            onStateChanged(this);
+            onStateChanged?.Invoke(this);
         }
     }
 
@@ -164,7 +162,7 @@ public class Mqtt_Client
             return false;
         var message = Regex.Replace(input, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
         foreach (var keyValuePair in (Activator.CreateInstance(typeof(T)) is MqttBaseMessage instance ? instance.LocalToMessageFieldnameMapping : null) ?? new Dictionary<string, string>())
-            message = message.Replace(string.Format("\"{0}\":", keyValuePair.Key), string.Format("\"{0}\":", keyValuePair.Value));
+            message = message.Replace($"\"{keyValuePair.Key}\":", $"\"{keyValuePair.Value}\":");
         return Publish(topic, message, retain, qoS, lastWill);
     }
 
@@ -450,7 +448,7 @@ public class Mqtt_Client
                 {
                     json = Regex.Replace(json, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
                     foreach (var keyValuePair in (Activator.CreateInstance(typeof(T)) is MqttBaseMessage instance ? instance.LocalToMessageFieldnameMapping : null) ?? new Dictionary<string, string>())
-                        json = json.Replace(string.Format("\"{0}\":", keyValuePair.Value), string.Format("\"{0}\":", keyValuePair.Key));
+                        json = json.Replace($"\"{keyValuePair.Value}\":", $"\"{keyValuePair.Key}\":");
                     var obj = JsonConvert.DeserializeObject<T>(json);
                     if (obj == null && !RaiseWithNullWhenUninterpretable)
                         return;

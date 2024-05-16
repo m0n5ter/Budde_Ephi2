@@ -15,6 +15,7 @@ namespace PharmaProject
         {
             var entry = new Entry();
             entry.Start();
+
             while (Console.ReadKey().Key != ConsoleKey.X)
             {
                 Console.WriteLine("SEND");

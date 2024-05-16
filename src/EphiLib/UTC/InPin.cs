@@ -40,7 +40,7 @@ public class InPin : BasePin<InPin>
         lock (RaisePinChangedLock)
         {
             base.RaisePinChanged();
-            AsyncEvents.Raise(OnStateChangedAsync, ex => log.Error(string.Format("{0}_Async", this), ex.InnerException), this);
+            AsyncEvents.Raise(OnStateChangedAsync, ex => log.Error($"{this}_Async", ex.InnerException), this);
             try
             {
                 var onStateChanged = OnStateChanged;
@@ -50,7 +50,7 @@ public class InPin : BasePin<InPin>
             }
             catch (Exception ex)
             {
-                log.Error(string.Format("{0}", this), ex);
+                log.Error($"{this}", ex);
             }
         }
     }

@@ -54,8 +54,7 @@ namespace PharmaProject.Locations
 
         public static BaseLocation FindLocation(uint locationNumber)
         {
-            BaseLocation baseLocation;
-            return locationList.TryGetValue(locationNumber, out baseLocation) ? baseLocation : null;
+            return locationList.TryGetValue(locationNumber, out var baseLocation) ? baseLocation : null;
         }
 
         protected virtual void PreInit()
@@ -76,7 +75,7 @@ namespace PharmaProject.Locations
 
         private void CSD_UTC_OnConditionalStatusChanged(Conditional obj)
         {
-            Log(string.Format("\t{0} => {1}", obj.Name, obj.Status));
+            Log($"\t{obj.Name} => {obj.Status}");
         }
 
         protected virtual void AttachEventHandlers()
@@ -248,14 +247,14 @@ namespace PharmaProject.Locations
 
         private void NotifyWmsNoread()
         {
-            Log(string.Format("Notidy WMS NoRead: (loc:{0})", LocationNumber));
+            Log($"Notidy WMS NoRead: (loc:{LocationNumber})");
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungPackstück(0U, 0U, Encoding.ASCII.GetBytes("NoRead"), 0U, 0U, LocationNumber)));
             MessageSent();
         }
 
         protected virtual void RequestWmsDirection(string barcode)
         {
-            Log(string.Format("Requesting direction for barcode:{0} (loc:{1})", barcode, LocationNumber));
+            Log($"Requesting direction for barcode:{barcode} (loc:{LocationNumber})");
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungPackstück(0U, 0U, Encoding.ASCII.GetBytes(barcode), 0U, 0U, LocationNumber)));
             MessageSent();
         }

@@ -28,7 +28,7 @@ namespace PharmaProject.Locations
         public PalletizingLocation(string IP, string csd1BS1Ip, uint locationNumber)
             : base(IP, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("BS1 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS1Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"BS1 Loc:{locationNumber}", IPAddress.Parse(csd1BS1Ip)));
             dispatchCSD1.OnStateChanged += csd1.Dispatch_OnStateChanged;
             dispatchCSD2.OnStateChanged += csd2.Dispatch_OnStateChanged;
             finishDispatchCSD2.OnStateChanged += csd2.Dispatch_OnStateChanged;
@@ -119,7 +119,7 @@ namespace PharmaProject.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            var str = string.Format(" Crossover 1=>2 (Loc:{0})", LocationNumber);
+            var str = $" Crossover 1=>2 (Loc:{LocationNumber})";
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
             loadDisp = MakeConditionalBatch("Simultaneously load+dispatch" + str).AddStatement(scripts1.DispatchNormal).AddStatement(scripts2.LoadNormal);
@@ -133,11 +133,11 @@ namespace PharmaProject.Locations
                 MakeConditionalStatement("Move untill sensor low CSD:2" + str, OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddOutputState(MakeOut(PIN._23))
                     .AddCondition(scripts2.DispatchAlternativeSegmentOccupied, PIN_STATE.INACTIVE).AddGlobalTimeout(3000U));
             passthrough = MakeConditionalMacro("Passthrough " + str).AddStatement(scripts1.LoadNormal).AddStatement(loadDisp).AddStatement(scripts2.DispatchNormal);
-            Conditional conditional = MakeConditionalStatement(string.Format("Auto load precondition CSD:1, Loc:{0}", LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
+            Conditional conditional = MakeConditionalStatement($"Auto load precondition CSD:1, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition()
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts1.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts1.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LoadTriggerNormal).CloseBlock();
-            csd1AutoLoad = MakeConditionalMacro(string.Format("Auto load script CSD:1, Loc:{0}", LocationNumber)).AddStatement(conditional).AddStatement(scripts1.LoadNormal);
+            csd1AutoLoad = MakeConditionalMacro($"Auto load script CSD:1, Loc:{LocationNumber}").AddStatement(conditional).AddStatement(scripts1.LoadNormal);
         }
 
         public override void DoEvaluate()
@@ -157,7 +157,7 @@ namespace PharmaProject.Locations
                     break;
                 case CSD_STATE.OCCUPIED:
                     var route = csd1.Route;
-                    var to = route != null ? route.Destination : DESTINATION.TBD;
+                    var to = route?.Destination ?? DESTINATION.TBD;
                     if (to == DESTINATION.TBD)
                         to = DESTINATION.DISPATCH_CSD2;
                     Dispatch(to);
@@ -277,7 +277,7 @@ namespace PharmaProject.Locations
 
         protected override void DispatchWmsFeedback(Route route)
         {
-            if (route == null || route.Barcode == null || route.Barcode.Equals(string.Empty))
+            if (route?.Barcode == null || route.Barcode.Equals(string.Empty))
                 return;
             var direction = WMS_TOTE_DIRECTION.DIRECTION_1;
             switch (route.Destination)

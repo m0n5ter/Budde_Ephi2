@@ -76,8 +76,7 @@ namespace PharmaProject.BusinessLogic.Segments
                 }
 
                 var segmentStateChanged = OnPrintStationSegmentStateChanged;
-                if (segmentStateChanged != null)
-                    segmentStateChanged(this);
+                segmentStateChanged?.Invoke(this);
                 Evaluate();
                 CheckValid.Start();
             }
@@ -150,11 +149,11 @@ namespace PharmaProject.BusinessLogic.Segments
         private void InitScripts()
         {
             var utc = inSensor.Utc;
-            load = utc.MakeConditionalStatement(string.Format("PrintIO Seg {0}.load", SegNum), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U).AddCondition(inSensor)
+            load = utc.MakeConditionalStatement($"PrintIO Seg {SegNum}.load", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U).AddCondition(inSensor)
                 .AddOutputState(outMotor);
-            dispatch = utc.MakeConditionalStatement(string.Format("PrintIO Seg {0}.dispatch", SegNum), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
+            dispatch = utc.MakeConditionalStatement($"PrintIO Seg {SegNum}.dispatch", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
                 .AddCondition(inSensor, PIN_STATE.INACTIVE).AddOutputState(outMotor);
-            dispatchLoad = utc.MakeConditionalMacro(string.Format("PrintIO Seg.dispatch + load {0}", SegNum)).AddStatement(dispatch).AddStatement(load);
+            dispatchLoad = utc.MakeConditionalMacro($"PrintIO Seg.dispatch + load {SegNum}").AddStatement(dispatch).AddStatement(load);
             load.OnStateChanged += Script_OnStateChanged;
             dispatch.OnStateChanged += Script_OnStateChanged;
         }

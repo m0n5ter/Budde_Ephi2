@@ -101,7 +101,7 @@ namespace PharmaProject.Locations
             base.InitScripts();
             var scripts = GetScripts(1U);
             GetScripts(2U);
-            MakeConditionalMacro(string.Format("Auto Seg2 => Seg3 Loc:{0}", LocationNumber), RUN_MODE.PERMANENTLY)
+            MakeConditionalMacro($"Auto Seg2 => Seg3 Loc:{LocationNumber}", RUN_MODE.PERMANENTLY)
                 .AddStatement(MakeConditionalStatement("Auto Seg2 => Seg3 precondition", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND)
                     .AddCondition(s2_Sensor).AddCondition(inPrinter2Occupied, PIN_STATE.INACTIVE).CloseBlock()).AddStatement(
                     MakeConditionalStatement("Auto Seg2 => Seg3 Move", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(4000U).AddOutputState(s2_Run).AddOutputState(s3_Run)
@@ -110,11 +110,11 @@ namespace PharmaProject.Locations
                 .AddCondition(s2_Sensor);
             dispatchPrn2 = MakeConditionalStatement("Dispatch print 2 location", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(4000U).AddOutputState(s3_Run).AddOutputState(s4_Run)
                 .AddCondition(s4_Sensor);
-            Conditional conditional = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", 1, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Conditional conditional = MakeConditionalStatement($"Auto load precondition CSD:{1}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(inPrinter1Occupied, PIN_STATE.INACTIVE).AddCondition(scripts.LoadTriggerNormal).CloseBlock();
-            autoLoadPrinter1 = MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", 1, LocationNumber)).AddStatement(conditional).AddStatement(scripts.LoadNormal)
+            autoLoadPrinter1 = MakeConditionalMacro($"Auto load script CSD:{1}, Loc:{LocationNumber}").AddStatement(conditional).AddStatement(scripts.LoadNormal)
                 .AddStatement(scripts.DispatchNormal);
             autoLoadPrinter1.OnStateChanged += Script_OnStateChanged;
             dispatchPrn1.OnStateChanged += Script_OnStateChanged;
@@ -131,7 +131,7 @@ namespace PharmaProject.Locations
 
         private void Prn_OnStateChanged(LabelPrinter prn)
         {
-            Log(string.Format("PRN:{0} => {1}", prn == prn1 ? 1 : 2, prn.State));
+            Log($"PRN:{(prn == prn1 ? 1 : 2)} => {prn.State}");
             Evaluate();
         }
 
@@ -182,7 +182,7 @@ namespace PharmaProject.Locations
             else
                 prn2.Barcode = barcode;
             prn1.State = printAt1 ? PRINTER_STATE.WAITING_FOR_PACKAGE_PRN : PRINTER_STATE.WAITING_FOR_PACKAGE_NEXT_PRN;
-            Log(string.Format("Requesting printer for barcode:{0} (loc:{1})", barcode, LocationNumber));
+            Log($"Requesting printer for barcode:{barcode} (loc:{LocationNumber})");
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(printAt1, !printAt1, false, false, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
             MessageSent();
         }
@@ -275,9 +275,7 @@ namespace PharmaProject.Locations
                         break;
                     dispatchPrn2.Run();
                     var barcodeTrigger = BarcodeTrigger;
-                    if (barcodeTrigger == null)
-                        break;
-                    barcodeTrigger.Run();
+                    barcodeTrigger?.Run();
                     break;
                 case PRINTER_STATE.WAITING_FOR_PACKAGE_PRN:
                     if (!inPrinter2Occupied.Active)

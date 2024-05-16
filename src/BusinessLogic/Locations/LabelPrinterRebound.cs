@@ -37,9 +37,9 @@ namespace PharmaProject.BusinessLogic.Locations
             string BSTopIP)
             : base(IP, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("Loc:{0}, BS Left", locationNumber), IPAddress.Parse(BSLeftIP)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("Loc:{0}, BS Right", locationNumber), IPAddress.Parse(BSRightIP)));
-            BSTop = new BarcodeScanner(string.Format("Loc:{0}, BS Top", locationNumber), IPAddress.Parse(BSTopIP));
+            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Left", IPAddress.Parse(BSLeftIP)));
+            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Right", IPAddress.Parse(BSRightIP)));
+            BSTop = new BarcodeScanner($"Loc:{locationNumber}, BS Top", IPAddress.Parse(BSTopIP));
             BSTop.OnBarcodeScanned += BSTop_OnBarcodeScanned;
         }
 
@@ -50,9 +50,12 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (csdEndRebound != null)
                     csdEndRebound.OnStateChanged -= CsdEndRebound_OnStateChanged;
+
                 csdEndRebound = value;
+                
                 if (csdEndRebound == null)
                     return;
+                
                 csdEndRebound.OnStateChanged += CsdEndRebound_OnStateChanged;
             }
         }
@@ -64,8 +67,10 @@ namespace PharmaProject.BusinessLogic.Locations
         private void BSTop_OnBarcodeScanned(string barcode)
         {
             var job = s4.Job;
+            
             if (job == null)
                 return;
+            
             job.BarcodeTop = barcode;
             log.InfoFormat("Scanned Top Barcode: {0}", barcode);
             Evaluate();
@@ -75,8 +80,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             BarcodeSent();
             var job = s4.Job;
+            
             if (job == null)
                 return;
+            
             job.BarcodeSide = barcode;
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
             log.InfoFormat("Requesting Check Code for Barcode: {0}", barcode);
@@ -86,7 +93,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!SendAllowed)
                 return;
+            
             NoReadSent();
+            
             Log("Notify WMS NoRead: (Labeling, rebound)");
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes("NoRead"), LocationNumber)));
         }
@@ -94,12 +103,11 @@ namespace PharmaProject.BusinessLogic.Locations
         public bool CheckBarcodeValid(string BcSide, string BcTop, string BcCheck)
         {
             var flag = !string.IsNullOrEmpty(BcSide) && !string.IsNullOrEmpty(BcTop) && !string.IsNullOrEmpty(BcCheck);
+            
             if (flag)
                 flag = BcTop.Equals(BcCheck);
-            if (flag)
-                log.InfoFormat("BC_VALID bc:{0}, top:{1}, check:{2}", BcSide, BcTop, BcCheck);
-            else
-                log.InfoFormat("BC_INVALID bc:{0}, top:{1}, check:{2}", BcSide, BcTop, BcCheck);
+            
+            log.InfoFormat(flag ? "BC_VALID bc:{0}, top:{1}, check:{2}" : "BC_INVALID bc:{0}, top:{1}, check:{2}", BcSide, BcTop, BcCheck);
             return flag;
         }
 
@@ -141,6 +149,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             Evaluate();
         }
 
@@ -153,6 +162,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
+            
             return csdNum == 1U
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.RollersRun, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading, endDelay: 100U)
@@ -165,6 +175,7 @@ namespace PharmaProject.BusinessLogic.Locations
             var barcodeSide = PostPrintCsd.Job?.BarcodeSide;
             var barcodeTop = PostPrintCsd.Job?.BarcodeTop;
             var checkCode = PostPrintCsd.Job?.CheckCode;
+
             switch (csd1.State)
             {
                 case SEGMENT_STATE.OCCUPIED:
@@ -204,6 +215,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (CsdEndRebound == null || csdEndRebound.State != SEGMENT_STATE.IDLE || !toteAvlRebound.Active || !reboundButton.Active || !CsdEndRebound.LoadNormal())
                 return;
+            
             dispAcm.Run();
         }
 
@@ -221,12 +233,14 @@ namespace PharmaProject.BusinessLogic.Locations
                 case FUNCTION_CODES.FEHLER_LABELDRUCK:
                     log.InfoFormat("Received Error for Barcode: {0}", Encoding.ASCII.GetString((message as FehlerLabeldruck).Barcode).TrimEnd(new char[1]));
                     break;
+            
                 case FUNCTION_CODES.LABELDRUCK_ERFOLGREICH:
                     var labeldruckErfolgreich = message as LabeldruckErfolgreich;
                     var str1 = Encoding.ASCII.GetString(labeldruckErfolgreich.Barcode).TrimEnd(new char[1]);
                     var str2 = Encoding.ASCII.GetString(labeldruckErfolgreich.ComparisonBarcode).TrimEnd(new char[1]);
                     log.InfoFormat("Received Check Code: {0} for Barcode: {1}", str2, str1);
                     var job1 = s4.Job;
+                
                     if (str1.Equals(job1?.BarcodeSide))
                     {
                         job1.CheckCode = str2;
@@ -234,6 +248,7 @@ namespace PharmaProject.BusinessLogic.Locations
                     }
 
                     var job2 = PostPrintCsd.Job;
+                    
                     if (str1.Equals(job2?.BarcodeSide))
                     {
                         job2.CheckCode = str2;
@@ -241,6 +256,7 @@ namespace PharmaProject.BusinessLogic.Locations
                     }
 
                     break;
+
                 default:
                     return false;
             }

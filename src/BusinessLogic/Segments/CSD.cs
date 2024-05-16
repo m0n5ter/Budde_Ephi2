@@ -56,9 +56,9 @@ namespace PharmaProject.BusinessLogic.Segments
                     return;
                 route = value;
                 if (value == null)
-                    parent.Log(string.Format("\tCSD{0}, ROUTE CLEARED", CsdNum));
+                    parent.Log($"\tCSD{CsdNum}, ROUTE CLEARED");
                 else
-                    parent.Log(string.Format("\tCSD{0}, ROUTE SET {1}", CsdNum, value));
+                    parent.Log($"\tCSD{CsdNum}, ROUTE SET {value}");
             }
         }
 
@@ -171,7 +171,7 @@ namespace PharmaProject.BusinessLogic.Segments
                             break;
                     }
 
-                    parent.Log(string.Format("CSD {0}, {1} => {2}", CsdNum, state, value));
+                    parent.Log($"CSD {CsdNum}, {state} => {value}");
                     state = value;
                     stateChanged = DateTime.Now;
                 }
@@ -238,8 +238,7 @@ namespace PharmaProject.BusinessLogic.Segments
         protected virtual void HandleStateChanged()
         {
             var onStateChanged = OnStateChanged;
-            if (onStateChanged != null)
-                onStateChanged(this);
+            onStateChanged?.Invoke(this);
             switch (State)
             {
                 case SEGMENT_STATE.IDLE:

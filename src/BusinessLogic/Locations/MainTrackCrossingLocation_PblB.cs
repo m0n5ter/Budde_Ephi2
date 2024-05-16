@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.MainTrackCrossingLocation_PblB
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System.Net;
+﻿using System.Net;
 using PharmaProject.BusinessLogic.Devices;
 
 namespace PharmaProject.BusinessLogic.Locations
@@ -22,7 +16,7 @@ namespace PharmaProject.BusinessLogic.Locations
             string csd2BS2Ip)
             : base(IP, locationNumber, csd1BS1Ip, csd1BS2Ip, csd2BS1Ip)
         {
-            csd2BS2 = new BarcodeScanner(string.Format("csd2BS2 Loc:{0}", locationNumber), IPAddress.Parse(csd2BS2Ip));
+            csd2BS2 = new BarcodeScanner($"csd2BS2 Loc:{locationNumber}", IPAddress.Parse(csd2BS2Ip));
             csd2BS2.OnBarcodeScanned += Csd2_OnBarcodeScanned;
             csd2BS2.OnNoRead += OnNoRead;
         }

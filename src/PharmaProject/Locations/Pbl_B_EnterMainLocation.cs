@@ -37,7 +37,7 @@ namespace PharmaProject.Locations
             base.InitScripts();
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
-            var name = string.Format(" Tote merge 2=>1 (Loc:{0})", LocationNumber);
+            var name = $" Tote merge 2=>1 (Loc:{LocationNumber})";
             Conditional conditional = MakeConditionalBatch("Simultaneously load+dispatch" + name).AddStatement(scripts1.LoadAlternative).AddStatement(scripts2.DispatchAlternative);
             merge2to1 = MakeConditionalMacro(name).AddStatement(scripts2.LoadNormal).AddStatement(conditional);
         }
@@ -60,11 +60,11 @@ namespace PharmaProject.Locations
                     return null;
             }
 
-            Conditional conditional2 = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", csdNum, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Conditional conditional2 = MakeConditionalStatement($"Auto load precondition CSD:{csdNum}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LoadTriggerNormal).CloseBlock();
-            Conditional conditional3 = MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", csdNum, LocationNumber), csdNum == 1U ? RUN_MODE.ON_DEMAND : RUN_MODE.PERMANENTLY)
+            Conditional conditional3 = MakeConditionalMacro($"Auto load script CSD:{csdNum}, Loc:{LocationNumber}", csdNum == 1U ? RUN_MODE.ON_DEMAND : RUN_MODE.PERMANENTLY)
                 .AddStatement(conditional2).AddStatement(conditional1);
             if (csdNum == 1U)
                 csd1AutoLoad = conditional3;
@@ -98,7 +98,7 @@ namespace PharmaProject.Locations
         {
             var scripts = GetScripts(csd);
             return csd == 1U
-                ? MakeConditionalMacro(string.Format("Pass through (Loc:{0}, CSD:{1})", LocationNumber, csd)).AddStatement(base.LoadNormalScript(csd)).AddStatement(scripts.DispatchNormal)
+                ? MakeConditionalMacro($"Pass through (Loc:{LocationNumber}, CSD:{csd})").AddStatement(base.LoadNormalScript(csd)).AddStatement(scripts.DispatchNormal)
                 : base.PassThroughScript(csd);
         }
 

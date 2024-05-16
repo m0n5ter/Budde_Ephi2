@@ -34,8 +34,8 @@ namespace PharmaProject.Locations
             SharedSlopeControl slopeControl)
             : base(utcIp, locationNumber, 3U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("bs1 Loc:{0}", locationNumber), IPAddress.Parse(bs1Ip)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("bs2 Loc:{0}", locationNumber), IPAddress.Parse(bs2Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"bs1 Loc:{locationNumber}", IPAddress.Parse(bs1Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"bs2 Loc:{locationNumber}", IPAddress.Parse(bs2Ip)));
             SlopeControl = slopeControl;
             slopeControl.CanTransferChanged = Evaluate;
             ReEvaluate = new DelayedEvent(TimeSpan.FromMilliseconds(500.0), Evaluate);
@@ -88,7 +88,7 @@ namespace PharmaProject.Locations
         {
             base.InitScripts();
             var scripts = GetScripts(2U);
-            DispatchToSlope = MakeConditionalStatement(string.Format("Dispatch to slope (Loc:{0}, CSD:{1})", LocId, 2), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
+            DispatchToSlope = MakeConditionalStatement($"Dispatch to slope (Loc:{LocId}, CSD:{2})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.DispatchNormalSegmentOccupied, PIN_STATE.INACTIVE).AddGuardBlock(1000U).AddGuardPin(scripts.DispatchNormalSegmentOccupied)
                 .CloseBlock().CloseBlock().AddOutputState(DrivePreSlopeSeg);
             CSD2_DispAltInside = MakeDispatchStatement(scripts.BeltsRun, TABLE_POSITION.UP, scripts.BeltsDir, MOTOR_DIR.CCW, GetScripts(3U).OccupiedBelts, scripts.OccupiedBelts, 2U,
@@ -163,7 +163,7 @@ namespace PharmaProject.Locations
                     break;
                 case CSD_STATE.OCCUPIED:
                     var route = csd2.Route;
-                    var destination = route != null ? route.Destination : DESTINATION.TBD;
+                    var destination = route?.Destination ?? DESTINATION.TBD;
                     Dispatch(destination == DESTINATION.TBD ? DESTINATION.DISPATCH_CSD2 : destination);
                     break;
             }

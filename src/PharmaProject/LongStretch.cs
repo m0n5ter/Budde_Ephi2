@@ -146,9 +146,7 @@ namespace PharmaProject
         protected virtual void RaiseOnEmptyChanged()
         {
             var onEmptyChanged = OnEmptyChanged;
-            if (onEmptyChanged == null)
-                return;
-            onEmptyChanged(empty);
+            onEmptyChanged?.Invoke(empty);
         }
     }
 }

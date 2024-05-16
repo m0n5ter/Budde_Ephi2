@@ -45,8 +45,8 @@ namespace PharmaProject.Locations
             SharedSlopeControl slopeControl)
             : base(IP, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd2BS1 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS1Ip)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("csd2BS2 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS2Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"csd2BS1 Loc:{locationNumber}", IPAddress.Parse(csd1BS1Ip)));
+            AddBarcodeScanner(new BarcodeScanner($"csd2BS2 Loc:{locationNumber}", IPAddress.Parse(csd1BS2Ip)));
             slopeControl.CanTransferPtr = SlopeLoadAllowed;
             SlopeSleep = new DelayedEvent(TimeSpan.FromSeconds(30.0), () => SlopeRun = false);
             DispatchDelayedStart = new DelayedEvent(TimeSpan.FromMilliseconds(4000.0), slopeControl.CanTransferChanged);
@@ -59,7 +59,7 @@ namespace PharmaProject.Locations
             {
                 if (slopeRun == value)
                     return;
-                Log(string.Format("Slope {0}", value ? "start" : (object)"stop"));
+                Log($"Slope {(value ? "start" : (object)"stop")}");
                 slopeRun = value;
                 if (slopeRun)
                 {
@@ -123,7 +123,7 @@ namespace PharmaProject.Locations
             base.InitScripts();
             var scripts1 = GetScripts(1U);
             var scripts2 = GetScripts(2U);
-            Conditional conditional = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", 1, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Conditional conditional = MakeConditionalStatement($"Auto load precondition CSD:{1}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts1.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts1.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts1.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts1.LoadTriggerNormal).CloseBlock();
@@ -223,7 +223,7 @@ namespace PharmaProject.Locations
                 if (csd1.Route == null)
                     Log(">>>>>>>    csd1.Route == null   <<<<<<<<<<<");
                 var route = csd1.Route;
-                var to = route != null ? route.Destination : DESTINATION.DISPATCH_CSD1;
+                var to = route?.Destination ?? DESTINATION.DISPATCH_CSD1;
                 if (to == DESTINATION.TBD)
                     to = DESTINATION.DISPATCH_CSD1;
                 Dispatch(to);

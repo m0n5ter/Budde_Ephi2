@@ -114,7 +114,7 @@ namespace PharmaProject
                     var location = BaseLocation.FindLocation(message.location);
                     if (location == null)
                         break;
-                    location.Log(string.Format("Received function code {0}", message.functionCode));
+                    location.Log($"Received function code {message.functionCode}");
                     location.ProcessRxMessage(message);
                     break;
             }

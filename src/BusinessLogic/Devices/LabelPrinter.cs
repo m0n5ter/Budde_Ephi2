@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Devices.LabelPrinter
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.Log4Net;
 using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
@@ -35,7 +29,7 @@ namespace PharmaProject.BusinessLogic.Devices
             OutPin apply)
         {
             PrnNum = prnNum;
-            Log = Log4NetHelpers.AddIsolatedLogger(string.Format("Printer.{0}", prnNum), "..\\Log\\Printers\\");
+            Log = Log4NetHelpers.AddIsolatedLogger($"Printer.{prnNum}", "..\\Log\\Printers\\");
             inApplying = applying;
             inPrintready = printReady;
             inDeviceReady = deviceReady;
@@ -53,6 +47,7 @@ namespace PharmaProject.BusinessLogic.Devices
             {
                 if (applyingState == value)
                     return;
+
                 switch (value)
                 {
                     case APPLYING_STATE.WAITING_FOR_PRINT:
@@ -63,6 +58,7 @@ namespace PharmaProject.BusinessLogic.Devices
                         }
 
                         break;
+                
                     case APPLYING_STATE.APPLYING:
                         apply.Run();
                         break;
@@ -70,9 +66,8 @@ namespace PharmaProject.BusinessLogic.Devices
 
                 applyingState = value;
                 var onApplyingChanged = OnApplyingChanged;
-                if (onApplyingChanged == null)
-                    return;
-                onApplyingChanged(this);
+
+                onApplyingChanged?.Invoke(this);
             }
         }
 
@@ -83,11 +78,10 @@ namespace PharmaProject.BusinessLogic.Devices
             {
                 if (deviceReady == value)
                     return;
+
                 deviceReady = value;
                 var deviceReadyChanged = OnDeviceReadyChanged;
-                if (deviceReadyChanged == null)
-                    return;
-                deviceReadyChanged(this);
+                deviceReadyChanged?.Invoke(this);
             }
         }
 
@@ -97,6 +91,7 @@ namespace PharmaProject.BusinessLogic.Devices
         {
             if (!pin.Active || ApplyingState != APPLYING_STATE.WAITING_FOR_PRINT)
                 return;
+
             ApplyingState = APPLYING_STATE.LABEL_READY;
         }
 
@@ -107,8 +102,12 @@ namespace PharmaProject.BusinessLogic.Devices
 
         private void InitScrips()
         {
-            apply = inApplying.Utc.MakeConditionalStatement(string.Format("Apply command (prn:{0})", PrnNum), OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE).AddGlobalTimeout(3000U).AddCondition(inApplying)
+            apply = inApplying.Utc
+                .MakeConditionalStatement($"Apply command (prn:{PrnNum})", OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE)
+                .AddGlobalTimeout(3000U)
+                .AddCondition(inApplying)
                 .AddOutputState(outApply);
+
             apply.OnStateChanged += Applying_OnStateChanged;
         }
 
@@ -122,9 +121,11 @@ namespace PharmaProject.BusinessLogic.Devices
                 case CONDITIONAL_STATE.RUN_REQUESTED:
                     ApplyingState = APPLYING_STATE.APPLYING;
                     break;
+                
                 case CONDITIONAL_STATE.FINISHED:
                     ApplyingState = APPLYING_STATE.APPLYING_READY;
                     break;
+                
                 case CONDITIONAL_STATE.TIMED_OUT:
                     ApplyingState = APPLYING_STATE.APPLYING_FAILED;
                     break;

@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Devices.BarcodeScanner
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -42,7 +36,7 @@ namespace PharmaProject.BusinessLogic.Devices
 
         public static void DisconnectAllScanners()
         {
-            foreach (BaseConnection allBarcodeScanner in allBarcodeScanners)
+            foreach (var allBarcodeScanner in allBarcodeScanners)
                 allBarcodeScanner.Disconnect();
         }
 
@@ -53,8 +47,10 @@ namespace PharmaProject.BusinessLogic.Devices
         protected override void ConnectionStateChanged()
         {
             base.ConnectionStateChanged();
+
             if (ConnectionState != CONNECTION_STATE.CONNECTED)
                 return;
+
             hbWatchDog.Start();
         }
 
@@ -67,28 +63,30 @@ namespace PharmaProject.BusinessLogic.Devices
         protected override void MessageReceived(byte[] message)
         {
             hbWatchDog.Start();
+
             if (message.Length < 2)
                 return;
+
             var str1 = Encoding.ASCII.GetString(message, 1, message.Length - 2);
             var separator = new char[2] { '\u0002', '\u0003' };
+
             foreach (var str2 in str1.Split(separator, StringSplitOptions.RemoveEmptyEntries))
+            {
                 switch (str2)
                 {
                     case "HeartBeat":
                         continue;
                     case "NoRead":
                         var onNoRead = OnNoRead;
-                        if (onNoRead != null) onNoRead();
+                        onNoRead?.Invoke();
                         continue;
                     default:
                         var onBarcodeScanned = OnBarcodeScanned;
-                        if (onBarcodeScanned != null)
-                        {
-                            onBarcodeScanned(str2);
-                        }
+                        onBarcodeScanned?.Invoke(str2);
 
                         continue;
                 }
+            }
 
             hbWatchDog.Start();
         }

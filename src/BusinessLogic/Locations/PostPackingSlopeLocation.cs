@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.PostPackingSlopeLocation
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
 using Ephi.Core.UTC.ConditionalStatements;
@@ -65,8 +59,10 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (acmFull_us == value)
                     return;
+
                 acmFull_us = value;
                 postPackingSlopeControl.RaiseCanTransferChanged();
+                
                 if (value)
                 {
                     RestartLoad();
@@ -86,9 +82,12 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (value)
                     SlopeSleep.Start();
+                
                 if (slopeRun == value)
                     return;
+                
                 slopeRun = value;
+                
                 if (slopeRun)
                 {
                     SlopeSleep.Start();
@@ -111,8 +110,10 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (acmFull_ds == value)
                     return;
+                
                 acmFull_ds = value;
                 acm_ds_FullSet = DateTime.Now;
+                
                 if (acmFull_ds)
                 {
                     if (LastAllowedAge < TimeSpan.FromMilliseconds(1000.0))
@@ -144,7 +145,7 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            DispatchToSlope = MakeConditionalStatement(string.Format("Dispatch to slope (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
+            DispatchToSlope = MakeConditionalStatement($"Dispatch to slope (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(inDownstreamOcc, PIN_STATE.INACTIVE).AddGuardBlock(1000U).AddGuardPin(inDownstreamOcc).CloseBlock().CloseBlock()
                 .AddOutputState(outDownstreamDispatch);
         }
@@ -164,6 +165,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (AcmFull_us)
                 return false;
+            
             RestartLoad();
             return true;
         }
@@ -172,6 +174,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Inactive)
                 return;
+            
             AcmFull_us = false;
         }
 
@@ -179,6 +182,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             AcmFull_us = true;
         }
 
@@ -192,8 +196,10 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             var storeSlopeControl = preAutoStoreSlopeControl;
             AcmFull_ds = (storeSlopeControl != null ? storeSlopeControl.CanTransfer ? 1 : 0 : 0) == 0;
+            
             if (AcmFull_ds)
                 return;
+            
             HandleSlope_ds();
         }
 
@@ -201,6 +207,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             HandleSlope_ds();
         }
 
@@ -208,7 +215,9 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!inDownstreamOcc.Active)
                 return;
+            
             var timeSpan = TimeSpan.FromMilliseconds(4500.0);
+            
             if (LastAllowedAge < timeSpan)
             {
                 ReEvaluate.Start();
@@ -217,8 +226,10 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 var storeSlopeControl = preAutoStoreSlopeControl;
                 AcmFull_ds = (storeSlopeControl != null ? storeSlopeControl.CanTransfer ? 1 : 0 : 0) == 0;
+            
                 if (AcmFull_ds)
                     return;
+                
                 if (Acm_ds_FullAge < timeSpan)
                 {
                     ReEvaluate.Start();

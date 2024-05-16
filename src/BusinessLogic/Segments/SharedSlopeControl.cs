@@ -25,9 +25,7 @@ namespace PharmaProject.BusinessLogic.Segments
         public void RaiseCanTransferChanged()
         {
             var canTransferChanged = CanTransferChanged;
-            if (canTransferChanged == null)
-                return;
-            canTransferChanged();
+            canTransferChanged?.Invoke();
         }
     }
 }

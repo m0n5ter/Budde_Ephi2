@@ -35,10 +35,10 @@ namespace PharmaProject.Locations
             string csd2BS2Ip)
             : base(IP, locationNumber, 2U)
         {
-            csd1BS1 = new BarcodeScanner(string.Format("csd1BS1 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS1Ip));
-            csd1BS2 = new BarcodeScanner(string.Format("csd1BS2 Loc:{0}", locationNumber), IPAddress.Parse(csd1BS2Ip));
-            csd2BS1 = new BarcodeScanner(string.Format("csd2BS1 Loc:{0}", locationNumber), IPAddress.Parse(csd2BS1Ip));
-            csd2BS2 = new BarcodeScanner(string.Format("csd2BS2 Loc:{0}", locationNumber), IPAddress.Parse(csd2BS2Ip));
+            csd1BS1 = new BarcodeScanner($"csd1BS1 Loc:{locationNumber}", IPAddress.Parse(csd1BS1Ip));
+            csd1BS2 = new BarcodeScanner($"csd1BS2 Loc:{locationNumber}", IPAddress.Parse(csd1BS2Ip));
+            csd2BS1 = new BarcodeScanner($"csd2BS1 Loc:{locationNumber}", IPAddress.Parse(csd2BS1Ip));
+            csd2BS2 = new BarcodeScanner($"csd2BS2 Loc:{locationNumber}", IPAddress.Parse(csd2BS2Ip));
             csd1BS1.OnBarcodeScanned += Csd1_OnBarcodeScanned;
             csd1BS2.OnBarcodeScanned += Csd1_OnBarcodeScanned;
             csd2BS1.OnBarcodeScanned += Csd2_OnBarcodeScanned;
@@ -102,11 +102,11 @@ namespace PharmaProject.Locations
         {
             var scripts = GetScripts(csdNum);
             var conditional1 = base.LoadNormalScript(csdNum);
-            Conditional conditional2 = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", csdNum, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Conditional conditional2 = MakeConditionalStatement($"Auto load precondition CSD:{csdNum}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LoadTriggerNormal).CloseBlock();
-            Conditional conditional3 = MakeConditionalMacro(string.Format("Auto load script CSD:{0}, Loc:{1}", csdNum, LocationNumber)).AddStatement(conditional2).AddStatement(conditional1);
+            Conditional conditional3 = MakeConditionalMacro($"Auto load script CSD:{csdNum}, Loc:{LocationNumber}").AddStatement(conditional2).AddStatement(conditional1);
             switch (csdNum)
             {
                 case 1:
@@ -150,7 +150,7 @@ namespace PharmaProject.Locations
 
         protected override void DispatchWmsFeedback(Route route)
         {
-            if (route == null || route.Barcode == null || route.Barcode.Equals(string.Empty))
+            if (route?.Barcode == null || route.Barcode.Equals(string.Empty))
                 return;
             var direction = route.Destination == DESTINATION.DISPATCH_CSD1 ? WMS_TOTE_DIRECTION.DIRECTION_2 : WMS_TOTE_DIRECTION.DIRECTION_1;
             WmsCommunicator.Send(BaseMessage.MessageToByteArray(new RückmeldungPackstück(direction, Encoding.ASCII.GetBytes(route.Barcode), LocationNumber)));

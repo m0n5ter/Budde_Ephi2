@@ -35,9 +35,7 @@ public class ConditionalMacro : ConditionalContainer
 
     public ConditionalMacro AddGlobalTimeout(uint ms)
     {
-        TIMEOUT_RANGE outFunction;
-        byte outMultiplier;
-        TimeoutHelpers.MsToTimeout(ms, out outFunction, out outMultiplier);
+        TimeoutHelpers.MsToTimeout(ms, out var outFunction, out var outMultiplier);
         return AddGlobalTimeout(outFunction, outMultiplier);
     }
 

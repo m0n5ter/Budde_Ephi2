@@ -67,8 +67,7 @@ namespace PharmaProject.Locations
                     return;
                 acmFull_us = value;
                 var canTransferChanged = postPackingSlopeControl.CanTransferChanged;
-                if (canTransferChanged != null)
-                    canTransferChanged();
+                canTransferChanged?.Invoke();
                 if (value)
                 {
                     RestartLoad();
@@ -146,7 +145,7 @@ namespace PharmaProject.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            DispatchToSlope = MakeConditionalStatement(string.Format("Dispatch to slope (Loc:{0})", LocId), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
+            DispatchToSlope = MakeConditionalStatement($"Dispatch to slope (Loc:{LocId})", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddGlobalTimeout(5000U)
                 .AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(inDownstreamOcc, PIN_STATE.INACTIVE).AddGuardBlock(1000U).AddGuardPin(inDownstreamOcc).CloseBlock().CloseBlock()
                 .AddOutputState(outDownstreamDispatch);
         }

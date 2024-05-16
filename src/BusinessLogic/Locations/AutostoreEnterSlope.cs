@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: PharmaProject.BusinessLogic.Locations.AutostoreEnterSlope
-// Assembly: BusinessLogic, Version=1.0.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
-// Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
-
-using System;
+﻿using System;
 using Ephi.Core.Helping.General;
 using Ephi.Core.UTC;
 using PharmaProject.BusinessLogic.Segments;
@@ -36,10 +30,13 @@ namespace PharmaProject.BusinessLogic.Locations
             {
                 if (acmFull == value)
                     return;
+
                 acmFull = value;
                 SlopeControl.RaiseCanTransferChanged();
+                
                 if (value)
                     return;
+                
                 outUpstreamLoad.Deactivate();
                 LoadDelayedStop.Stop();
             }
@@ -63,6 +60,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (AcmFull)
                 return false;
+            
             outUpstreamLoad.Activate();
             LoadDelayedStop.Start();
             return true;
@@ -72,6 +70,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Inactive)
                 return;
+            
             AcmFull = false;
         }
 
@@ -79,6 +78,7 @@ namespace PharmaProject.BusinessLogic.Locations
         {
             if (!pin.Active)
                 return;
+            
             AcmFull = true;
         }
     }

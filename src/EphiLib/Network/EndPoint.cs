@@ -215,7 +215,7 @@ public abstract class EndPoint : BaseConnection
                 if (HeartbeatTimeout != TimeSpan.MaxValue && CommunicationAge.Age > HeartbeatTimeout && ConnectionState == CONNECTION_STATE.CONNECTED)
                     SendHeartbeat();
                 var socket2 = Socket;
-                var available = socket2 != null ? socket2.Available : 0;
+                var available = socket2?.Available ?? 0;
                 bool flag;
                 lock (sendQueue)
                 {
@@ -285,8 +285,7 @@ public abstract class EndPoint : BaseConnection
     private void DoSendMessage(SocketMessage message)
     {
         Socket?.Send(message.Payload);
-        if (message is AwaitingAckMessage)
-            (message as AwaitingAckMessage).WasSent();
+        (message as AwaitingAckMessage)?.WasSent();
         MessageSent(message);
     }
 

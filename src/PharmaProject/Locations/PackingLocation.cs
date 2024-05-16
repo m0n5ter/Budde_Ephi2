@@ -25,8 +25,8 @@ namespace PharmaProject.Locations
         public PackingLocation(string IP, uint locationNumber, string bs1IP, string bs2IP)
             : base(IP, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner(string.Format("Loc:{0} Barcodescanner:{1}", locationNumber, 1), IPAddress.Parse(bs1IP)));
-            AddBarcodeScanner(new BarcodeScanner(string.Format("Loc:{0} Barcodescanner:{1}", locationNumber, 2), IPAddress.Parse(bs2IP)));
+            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber} Barcodescanner:{1}", IPAddress.Parse(bs1IP)));
+            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber} Barcodescanner:{2}", IPAddress.Parse(bs2IP)));
         }
 
         protected override void InitPins()
@@ -45,11 +45,11 @@ namespace PharmaProject.Locations
             base.InitScripts();
             var scripts = GetScripts(1U);
             GetScripts(2U);
-            Conditional conditional = MakeConditionalStatement(string.Format("Auto load precondition CSD:{0}, Loc:{1}", 1, LocationNumber), OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+            Conditional conditional = MakeConditionalStatement($"Auto load precondition CSD:{1}, Loc:{LocationNumber}", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
                 .MakePrecondition().AddLogicBlock(LOGIC_FUNCTION.AND).AddCondition(scripts.BeltsRun, PIN_STATE.INACTIVE).AddCondition(scripts.RollersRun, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LiftRun, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedBelts, PIN_STATE.INACTIVE).AddCondition(scripts.OccupiedRollers, PIN_STATE.INACTIVE)
                 .AddCondition(scripts.LoadTriggerNormal).CloseBlock();
-            MakeConditionalMacro(string.Format("Auto load CSD:1, Loc:{0}", LocationNumber), RUN_MODE.PERMANENTLY).AddStatement(conditional).AddStatement(scripts.LoadNormal);
+            MakeConditionalMacro($"Auto load CSD:1, Loc:{LocationNumber}", RUN_MODE.PERMANENTLY).AddStatement(conditional).AddStatement(scripts.LoadNormal);
         }
 
         protected override void InitCsdScrips(uint csdNum)
@@ -132,7 +132,7 @@ namespace PharmaProject.Locations
                     break;
                 case CSD_STATE.OCCUPIED:
                     var route1 = csd1.Route;
-                    DispatchCSD1(route1 != null ? route1.Destination : DESTINATION.TBD);
+                    DispatchCSD1(route1?.Destination ?? DESTINATION.TBD);
                     break;
             }
 
@@ -151,7 +151,7 @@ namespace PharmaProject.Locations
                     break;
                 case CSD_STATE.OCCUPIED:
                     var route3 = csd2.Route;
-                    DispatchCSD2(route3 != null ? route3.Destination : DESTINATION.TBD);
+                    DispatchCSD2(route3?.Destination ?? DESTINATION.TBD);
                     break;
             }
         }
@@ -166,7 +166,7 @@ namespace PharmaProject.Locations
 
         protected override void DispatchWmsFeedback(Route route)
         {
-            if (route == null || route.Barcode == null || route.Barcode.Equals(string.Empty))
+            if (route?.Barcode == null || route.Barcode.Equals(string.Empty))
                 return;
             WMS_TOTE_DIRECTION direction;
             switch (route.Destination)

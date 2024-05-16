@@ -99,7 +99,7 @@ namespace PharmaProject.Locations
 
         private Conditional MakeEnterScript(InPin btn, OutPin load, string id)
         {
-            return MakeConditionalStatement(string.Format("Load ACM section {0} ", id), OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE, RUN_MODE.PERMANENTLY).AddLogicBlock(LOGIC_FUNCTION.AND)
+            return MakeConditionalStatement($"Load ACM section {id} ", OUTPUT_ENFORCEMENT.ENF_NEGATE_WHEN_TRUE, RUN_MODE.PERMANENTLY).AddLogicBlock(LOGIC_FUNCTION.AND)
                 .AddCondition(btn, PIN_STATE.INACTIVE).AddGuardBlock(100U).AddGuardPin(btn).CloseBlock().CloseBlock().AddOutputState(load);
         }
 
