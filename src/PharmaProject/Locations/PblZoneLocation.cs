@@ -104,10 +104,11 @@ namespace PharmaProject.Locations
         protected override Conditional DispatchNormalScript(uint csdNum)
         {
             var scripts = GetScripts(csdNum);
-            $"Zone Loc. {LocationNumber}, CSD {csdNum} ";
+
             if (csdNum == 1U)
                 return MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CW, scripts.LiftDown, scripts.OccupiedBelts, csdNum, endDelay: 500U,
                     middleMotorRun: MakeOut(PIN._22));
+            
             return csdNum == 2U
                 ? MakeDispatchStatement(scripts.RollersRun, TABLE_POSITION.DOWN, scripts.RollersDir, MOTOR_DIR.CCW, scripts.LiftDown, scripts.OccupiedRollers, csdNum,
                     nextSegLoad: scripts.DownstreamStartLoading)
