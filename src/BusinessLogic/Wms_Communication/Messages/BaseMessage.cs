@@ -92,6 +92,9 @@ namespace PharmaProject.BusinessLogic.Wms_Communication.Messages
                 case FUNCTION_CODES.AUFBRINGEN_LABEL:
                     message = new AufbringenLabel(false, new byte[32], 0U);
                     break;
+                case FUNCTION_CODES.LABEL_CHECK_RESPONSE:
+                    message = new LabelCheckResponse(0U, 0U, new byte[116]);
+                    break;
                 case FUNCTION_CODES.ANFORDERUNG_PACKMITTEL:
                     message = new AnforderungPackmittel(0U, 0U, new byte[108]);
                     break;

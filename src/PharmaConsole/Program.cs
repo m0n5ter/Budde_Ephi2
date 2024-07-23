@@ -19,8 +19,8 @@ namespace PharmaProject
             while (Console.ReadKey().Key != ConsoleKey.X)
             {
                 Console.WriteLine("SEND");
-                entry.location9.Set1Barcode("A");
-                entry.location9.WmsSetDirection("A", WMS_TOTE_DIRECTION.DIRECTION_2, 0U);
+               // entry.location9.Set1Barcode("A");
+                //entry.location9.WmsSetDirection("A", WMS_TOTE_DIRECTION.DIRECTION_2, 0U);
             }
 
             do

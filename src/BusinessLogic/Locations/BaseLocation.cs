@@ -165,7 +165,16 @@ namespace PharmaProject.BusinessLogic.Locations
 
         protected void AddBarcodeScanner(BarcodeScanner b)
         {
-            b.OnBarcodeScanned += OnBarcodeScanned;
+            b.OnBarcodeScanned += (barcode) =>
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"BarcodeScanner: {b.IpAddress}:{barcode}");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                OnBarcodeScanned(barcode);
+            };
+            
+            
             b.OnNoRead += OnNoRead;
         }
 

@@ -70,7 +70,8 @@ namespace PharmaProject.BusinessLogic.Locations
             
             if (job == null)
                 return;
-            
+         
+            //"Shipment" label (?)
             job.BarcodeTop = barcode;
             log.InfoFormat("Scanned Top Barcode: {0}", barcode);
             Evaluate();
@@ -79,14 +80,15 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void OnBarcodeScanned(string barcode)
         {
             BarcodeSent();
-            var job = s4.Job;
+            //var job = s4.Job;
             
-            if (job == null)
-                return;
-            
-            job.BarcodeSide = barcode;
-            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
-            log.InfoFormat("Requesting Check Code for Barcode: {0}", barcode);
+            //if (job == null)
+            //    return;
+
+            ////"Transport" label (?)
+            //job.BarcodeSide = barcode;
+            //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
+            //log.InfoFormat("Requesting Check Code for Barcode: {0}", barcode);
         }
 
         protected override void OnNoRead()
@@ -131,8 +133,14 @@ namespace PharmaProject.BusinessLogic.Locations
         protected override void InitScripts()
         {
             base.InitScripts();
-            dispAcm = MakeConditionalStatement("Dispatch ACM", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddTimeoutCondition(500U).AddOutputState(outDispatchAcm);
-            BarcodeTrigger = MakeConditionalStatement("BarcodeTrigger", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE).AddTimeoutCondition(500U).AddOutputState(outScannerTrigger);
+
+            dispAcm = MakeConditionalStatement("Dispatch ACM", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+                .AddTimeoutCondition(500U)
+                .AddOutputState(outDispatchAcm);
+
+            BarcodeTrigger = MakeConditionalStatement("BarcodeTrigger", OUTPUT_ENFORCEMENT.ENF_UNTIL_CONDITION_TRUE)
+                .AddTimeoutCondition(500U)
+                .AddOutputState(outScannerTrigger);
         }
 
         protected override CSD MakeCSD(uint csdNum)
@@ -174,40 +182,47 @@ namespace PharmaProject.BusinessLogic.Locations
             HandleCsdEndRebound();
             var barcodeSide = PostPrintCsd.Job?.BarcodeSide;
             var barcodeTop = PostPrintCsd.Job?.BarcodeTop;
-            var checkCode = PostPrintCsd.Job?.CheckCode;
+            // var checkCode = PostPrintCsd.Job?.CheckCode;
 
             switch (csd1.State)
             {
                 case SEGMENT_STATE.OCCUPIED:
-                    if (CheckBarcodeValid(barcodeSide, barcodeTop, checkCode))
+                    if (!string.IsNullOrEmpty(barcodeTop) && !string.IsNullOrEmpty(barcodeSide))
                     {
-                        if (csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
-                        {
-                            if (csd1.Scripts.DispatchNormalSegmentOccupied.PinStateAge < TimeSpan.FromMilliseconds(500.0))
-                            {
-                                ReEvaluate.Start();
-                                break;
-                            }
-
-                            csd1.DispatchNormal();
-                            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(true, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
-                        }
-
-                        break;
+                        WmsCommunicator.Send(BaseMessage.MessageToByteArray(new LabelCheckRequest(Encoding.ASCII.GetBytes(barcodeSide), Encoding.ASCII.GetBytes(barcodeTop), LocationNumber)));
                     }
 
-                    if (csd2.IsIdle && WaitWmsFeedbackTimedout)
-                    {
-                        log.InfoFormat("BOX DISAPPROVED bc:{0}", barcodeSide);
-                        if (csd2.LoadAlternative() && csd1.DispatchAlternative() && !string.IsNullOrEmpty(barcodeSide))
-                            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(false, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
-                    }
+
+                    //if (CheckBarcodeValid(barcodeSide, barcodeTop, checkCode))
+                    //{
+                    //    if (csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
+                    //    {
+                    //        if (csd1.Scripts.DispatchNormalSegmentOccupied.PinStateAge < TimeSpan.FromMilliseconds(500.0))
+                    //        {
+                    //            ReEvaluate.Start();
+                    //            break;
+                    //        }
+
+                    //        csd1.DispatchNormal();
+                    //        WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(true, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
+                    //    }
+
+                    //    break;
+                    //}
+
+                    //if (csd2.IsIdle && WaitWmsFeedbackTimedout)
+                    //{
+                    //    log.InfoFormat("BOX DISAPPROVED bc:{0}", barcodeSide);
+                    //    if (csd2.LoadAlternative() && csd1.DispatchAlternative() && !string.IsNullOrEmpty(barcodeSide))
+                    //        WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(false, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
+                    //}
 
                     break;
             }
 
             if (csd2.State != SEGMENT_STATE.OCCUPIED || !csd2.Scripts.DispatchNormalSegmentOccupied.Inactive)
                 return;
+
             csd2.DispatchNormal();
         }
 
@@ -233,7 +248,18 @@ namespace PharmaProject.BusinessLogic.Locations
                 case FUNCTION_CODES.FEHLER_LABELDRUCK:
                     log.InfoFormat("Received Error for Barcode: {0}", Encoding.ASCII.GetString((message as FehlerLabeldruck).Barcode).TrimEnd(new char[1]));
                     break;
+
+                case FUNCTION_CODES.LABEL_CHECK_RESPONSE:
+                    var proceed = (message as LabelCheckResponse).ShouldProceed;
+                    log.InfoFormat("Received LabelCheckResponse: {0}", proceed);
+
+                    if (proceed)
+                        csd1.DispatchNormal();
+                    else 
+                        csd2.DispatchNormal();
+                    break;
             
+
                 case FUNCTION_CODES.LABELDRUCK_ERFOLGREICH:
                     var labeldruckErfolgreich = message as LabeldruckErfolgreich;
                     var str1 = Encoding.ASCII.GetString(labeldruckErfolgreich.Barcode).TrimEnd(new char[1]);

@@ -4,16 +4,20 @@
 // MVID: 9C9BA900-8C53-48F6-9DE6-D42367924779
 // Assembly location: D:\_Work\Budde\_Clients\Ephi\ConveyorService\BusinessLogic.dll
 
+
+using System;
+using PharmaProject.BusinessLogic.Misc;
+
 namespace PharmaProject.BusinessLogic.Wms_Communication.Messages
 {
-    internal class FehlerLabeldruck : BaseMessage
+    internal class LabelCheckResponse : BaseMessage
     {
-        public FehlerLabeldruck(uint counter, uint location, byte[] functionData)
-            : base(counter, 41U, location)
+        public LabelCheckResponse(uint counter, uint location, byte[] functionData)
+            : base(counter, (uint)FUNCTION_CODES.LABEL_CHECK_RESPONSE, location)
         {
             FunctionData = functionData;
         }
 
-        public byte[] Barcode => TakeBytesFromFunctionData(8, 32);
+        public bool ShouldProceed => BitConverter.ToUInt32(TakeBytesFromFunctionData(0, 4), 0) != 0;
     }
 }

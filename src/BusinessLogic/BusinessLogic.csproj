@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entry.cs" />
+    <Compile Include="Wms_Communication\Messages\LabelCheckRequest.cs" />
+    <Compile Include="Wms_Communication\Messages\LabelCheckResponse.cs" />
     <Compile Include="Wms_Communication\WmsCommunicator.cs" />
     <Compile Include="Wms_Communication\Messages\Acknowledgement.cs" />
     <Compile Include="Wms_Communication\Messages\AnforderungPackmittel.cs" />
