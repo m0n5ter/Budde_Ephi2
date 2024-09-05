@@ -74,44 +74,47 @@ namespace PharmaProject.BusinessLogic.Locations
             //"Shipment" label (?)
             job.BarcodeTop = barcode;
             log.InfoFormat("Scanned Top Barcode: {0}", barcode);
+
+            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new LabelCheckRequest(Encoding.ASCII.GetBytes(job.BarcodeSide ?? ""), Encoding.ASCII.GetBytes(barcode), LocationNumber)));
+
             Evaluate();
         }
 
         protected override void OnBarcodeScanned(string barcode)
         {
             BarcodeSent();
-            //var job = s4.Job;
+            var job = s4.Job;
             
-            //if (job == null)
-            //    return;
+            if (job == null)
+                return;
 
-            ////"Transport" label (?)
-            //job.BarcodeSide = barcode;
+            //"Transport" label (?)
+            job.BarcodeSide = barcode;
             //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
             //log.InfoFormat("Requesting Check Code for Barcode: {0}", barcode);
         }
 
         protected override void OnNoRead()
         {
-            if (!SendAllowed)
-                return;
-            
-            NoReadSent();
-            
-            Log("Notify WMS NoRead: (Labeling, rebound)");
-            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes("NoRead"), LocationNumber)));
+            //if (!SendAllowed)
+            //    return;
+
+            //NoReadSent();
+
+            //Log("Notify WMS NoRead: (Labeling, rebound)");
+            //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes("NoRead"), LocationNumber)));
         }
 
-        public bool CheckBarcodeValid(string BcSide, string BcTop, string BcCheck)
-        {
-            var flag = !string.IsNullOrEmpty(BcSide) && !string.IsNullOrEmpty(BcTop) && !string.IsNullOrEmpty(BcCheck);
-            
-            if (flag)
-                flag = BcTop.Equals(BcCheck);
-            
-            log.InfoFormat(flag ? "BC_VALID bc:{0}, top:{1}, check:{2}" : "BC_INVALID bc:{0}, top:{1}, check:{2}", BcSide, BcTop, BcCheck);
-            return flag;
-        }
+        //public bool CheckBarcodeValid(string BcSide, string BcTop, string BcCheck)
+        //{
+        //    var flag = !string.IsNullOrEmpty(BcSide) && !string.IsNullOrEmpty(BcTop) && !string.IsNullOrEmpty(BcCheck);
+
+        //    if (flag)
+        //        flag = BcTop.Equals(BcCheck);
+
+        //    log.InfoFormat(flag ? "BC_VALID bc:{0}, top:{1}, check:{2}" : "BC_INVALID bc:{0}, top:{1}, check:{2}", BcSide, BcTop, BcCheck);
+        //    return flag;
+        //}
 
         protected override void InitPins()
         {
@@ -177,45 +180,44 @@ namespace PharmaProject.BusinessLogic.Locations
                 : base.DispatchNormalScript(csdNum);
         }
 
+        private bool _proceed = false;
+
         public override void DoEvaluate()
         {
             HandleCsdEndRebound();
             var barcodeSide = PostPrintCsd.Job?.BarcodeSide;
-            var barcodeTop = PostPrintCsd.Job?.BarcodeTop;
-            // var checkCode = PostPrintCsd.Job?.CheckCode;
+            //var barcodeTop = PostPrintCsd.Job?.BarcodeTop;
+            //var checkCode = PostPrintCsd.Job?.CheckCode;
 
             switch (csd1.State)
             {
                 case SEGMENT_STATE.OCCUPIED:
-                    if (!string.IsNullOrEmpty(barcodeTop) && !string.IsNullOrEmpty(barcodeSide))
+                    if (_proceed)
                     {
-                        WmsCommunicator.Send(BaseMessage.MessageToByteArray(new LabelCheckRequest(Encoding.ASCII.GetBytes(barcodeSide), Encoding.ASCII.GetBytes(barcodeTop), LocationNumber)));
+                        if (csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
+                        {
+                            if (csd1.Scripts.DispatchNormalSegmentOccupied.PinStateAge < TimeSpan.FromMilliseconds(500.0))
+                            {
+                                ReEvaluate.Start();
+                                break;
+                            }
+
+                            csd1.DispatchNormal();
+                            //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(true, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
+                        }
+
+                        break;
                     }
 
+                    if (csd2.IsIdle && WaitWmsFeedbackTimedout)
+                    {
+                        log.InfoFormat("BOX DISAPPROVED bc:{0}", barcodeSide);
 
-                    //if (CheckBarcodeValid(barcodeSide, barcodeTop, checkCode))
-                    //{
-                    //    if (csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
-                    //    {
-                    //        if (csd1.Scripts.DispatchNormalSegmentOccupied.PinStateAge < TimeSpan.FromMilliseconds(500.0))
-                    //        {
-                    //            ReEvaluate.Start();
-                    //            break;
-                    //        }
-
-                    //        csd1.DispatchNormal();
-                    //        WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(true, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
-                    //    }
-
-                    //    break;
-                    //}
-
-                    //if (csd2.IsIdle && WaitWmsFeedbackTimedout)
-                    //{
-                    //    log.InfoFormat("BOX DISAPPROVED bc:{0}", barcodeSide);
-                    //    if (csd2.LoadAlternative() && csd1.DispatchAlternative() && !string.IsNullOrEmpty(barcodeSide))
-                    //        WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(false, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
-                    //}
+                        if (csd2.LoadAlternative() && csd1.DispatchAlternative() && !string.IsNullOrEmpty(barcodeSide))
+                        {
+                            //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(false, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
+                        }
+                    }
 
                     break;
             }
@@ -250,15 +252,11 @@ namespace PharmaProject.BusinessLogic.Locations
                     break;
 
                 case FUNCTION_CODES.LABEL_CHECK_RESPONSE:
-                    var proceed = (message as LabelCheckResponse).ShouldProceed;
-                    log.InfoFormat("Received LabelCheckResponse: {0}", proceed);
+                    _proceed = (message as LabelCheckResponse).ShouldProceed;
+                    log.InfoFormat("Received LabelCheckResponse: {0}", _proceed);
 
-                    if (proceed)
-                        csd1.DispatchNormal();
-                    else 
-                        csd2.DispatchNormal();
-                    break;
-            
+                    ReEvaluate.Start();
+                    break;            
 
                 case FUNCTION_CODES.LABELDRUCK_ERFOLGREICH:
                     var labeldruckErfolgreich = message as LabeldruckErfolgreich;

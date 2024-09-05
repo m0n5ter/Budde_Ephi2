@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Ephi.Core.Helping.Log4Net;
 using log4net;
+using Newtonsoft.Json.Linq;
 using PharmaProject.BusinessLogic.Locations;
 using PharmaProject.BusinessLogic.Wms_Communication.Messages;
 using Rfc1006LibNet.Advanced;
@@ -120,8 +121,12 @@ namespace PharmaProject.BusinessLogic.Wms_Communication
         {
             var message = BaseMessage.ByteArrayToMessage(e.Buffer);
             LastMessageReceivedTime = DateTime.Now;
+            
             if (message.functionCode == 0U)
                 return;
+
+            Log.Info(" <<< WMS: " + message.functionCode);
+
             var onReceived = OnReceived;
             onReceived?.Invoke(message);
         }
@@ -130,13 +135,18 @@ namespace PharmaProject.BusinessLogic.Wms_Communication
         {
             if (rfc1006Server.Status != Rfc1006Status.Connected || rfc1006Server.Transmit(buffer) != buffer.Length)
                 return false;
+
+
             var array1 = buffer.Skip(4).Take(4).ToArray();
             var array2 = buffer.Skip(8).Take(4).ToArray();
+
             if (BitConverter.IsLittleEndian)
             {
                 Array.Reverse(array1);
                 Array.Reverse(array2);
             }
+
+            Log.Info(" >>> WMS: " + BitConverter.ToUInt32(array1, 0));
 
             BaseLocation.FindLocation(BitConverter.ToUInt32(array2, 0))?.Log($"Sent function code {BitConverter.ToUInt32(array1, 0)}");
             return true;
