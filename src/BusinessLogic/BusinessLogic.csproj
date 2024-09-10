@@ -40,6 +40,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleHelper.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Wms_Communication\Messages\LabelCheckRequest.cs" />
     <Compile Include="Wms_Communication\Messages\LabelCheckResponse.cs" />

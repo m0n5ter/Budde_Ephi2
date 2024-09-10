@@ -75,7 +75,7 @@ namespace PharmaProject.BusinessLogic.Locations
             if (rebound == null)
                 return;
 
-            rebound.s4 = s4;
+            rebound.printStationSegment = s4;
             rebound.CsdEndRebound = ReboundEndCsd;
             s4.DownstreamNeighbor = rebound.PostPrintCsd;
             BarcodeTrigger = rebound.BarcodeTrigger;

@@ -20,14 +20,18 @@ namespace PharmaProject.BusinessLogic.Locations
     public class LabelPrinterRebound : BaseLocation
     {
         public Conditional BarcodeTrigger;
+        private readonly BarcodeScanner BSLeft;
+        private readonly BarcodeScanner BSRight;
         private readonly BarcodeScanner BSTop;
         private CSD csdEndRebound;
         private Conditional dispAcm;
         private OutPin outDispatchAcm;
         private OutPin outScannerTrigger;
         private InPin reboundButton;
-        internal PrintStationIoSegment s4;
+        internal PrintStationIoSegment printStationSegment;
         private InPin toteAvlRebound;
+        private string _sideBarcode;
+        private string _topBarcode;
 
         public LabelPrinterRebound(
             string IP,
@@ -37,10 +41,17 @@ namespace PharmaProject.BusinessLogic.Locations
             string BSTopIP)
             : base(IP, locationNumber, 2U)
         {
-            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Left", IPAddress.Parse(BSLeftIP)));
-            AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Right", IPAddress.Parse(BSRightIP)));
+            //AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Left", IPAddress.Parse(BSLeftIP)));
+            //AddBarcodeScanner(new BarcodeScanner($"Loc:{locationNumber}, BS Right", IPAddress.Parse(BSRightIP)));
+
+            BSLeft = new BarcodeScanner($"Loc:{locationNumber}, BS Left", IPAddress.Parse(BSLeftIP));
+            BSRight = new BarcodeScanner($"Loc:{locationNumber}, BS Right", IPAddress.Parse(BSRightIP));
             BSTop = new BarcodeScanner($"Loc:{locationNumber}, BS Top", IPAddress.Parse(BSTopIP));
-            BSTop.OnBarcodeScanned += BSTop_OnBarcodeScanned;
+
+            BSLeft.OnBarcodeScanned += OnLeftBarcodeScanned;
+            BSRight.OnBarcodeScanned += OnRightBarcodeScanned;
+            BSTop.OnBarcodeScanned += OnTopBarcodeScanned;        
+            BSTop.OnNoRead += OnTopNoRead;
         }
 
         public CSD CsdEndRebound
@@ -64,38 +75,40 @@ namespace PharmaProject.BusinessLogic.Locations
 
         protected override InPin[] ResetEmergencyPins => new InPin[1] { reboundButton };
 
-        private void BSTop_OnBarcodeScanned(string barcode)
+        protected void OnLeftBarcodeScanned(string barcode)
         {
-            var job = s4.Job;
-            
-            if (job == null)
-                return;
-         
-            //"Shipment" label (?)
-            job.BarcodeTop = barcode;
-            log.InfoFormat("Scanned Top Barcode: {0}", barcode);
-
-            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new LabelCheckRequest(Encoding.ASCII.GetBytes(job.BarcodeSide ?? ""), Encoding.ASCII.GetBytes(barcode), LocationNumber)));
-
-            Evaluate();
-        }
-
-        protected override void OnBarcodeScanned(string barcode)
-        {
-            BarcodeSent();
-            var job = s4.Job;
-            
-            if (job == null)
-                return;
-
+            _sideBarcode = printStationSegment?.Job?.BarcodeSide ?? barcode;
             //"Transport" label (?)
-            job.BarcodeSide = barcode;
-            //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes(barcode), LocationNumber)));
-            //log.InfoFormat("Requesting Check Code for Barcode: {0}", barcode);
+            "Left barcode scanned".WriteLineColor(ConsoleColor.Green);
+            log.InfoFormat("Scanned LEFT Barcode: {0}", barcode);
         }
 
-        protected override void OnNoRead()
+        protected void OnRightBarcodeScanned(string barcode)
         {
+            _sideBarcode = printStationSegment?.Job?.BarcodeSide ?? barcode;
+            //"Transport" label (?)
+            "Right barcode scanned".WriteLineColor(ConsoleColor.Green);
+            log.InfoFormat("Scanned RIGHT Barcode: {0}", barcode);
+        }
+
+        private void OnTopBarcodeScanned(string barcode)
+        {
+            _topBarcode = barcode;
+            //"Shipment" label (?)
+            "Top barcode scanned".WriteLineColor(ConsoleColor.Yellow);
+            log.InfoFormat("Scanned TOP Barcode: {0}", barcode);
+
+            CheckBarcodes();
+        }
+
+        protected void OnTopNoRead()
+        {
+            log.Info("---------------------- NOREAD-------------");
+
+            _topBarcode = BarcodeScanner.NO_READ_MSG;
+            
+            CheckBarcodes();
+
             //if (!SendAllowed)
             //    return;
 
@@ -103,6 +116,19 @@ namespace PharmaProject.BusinessLogic.Locations
 
             //Log("Notify WMS NoRead: (Labeling, rebound)");
             //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AnmeldungLabeldruck(false, false, false, true, Encoding.ASCII.GetBytes("NoRead"), LocationNumber)));
+        }
+
+        private void CheckBarcodes()
+        {
+            $"Sending 46: {_sideBarcode} | {_topBarcode}".WriteLineColor(ConsoleColor.Cyan);
+
+            WmsCommunicator.Send(BaseMessage.MessageToByteArray(new LabelCheckRequest(Encoding.ASCII.GetBytes(_sideBarcode ?? BarcodeScanner.NO_READ_MSG),
+                Encoding.ASCII.GetBytes(_topBarcode ?? BarcodeScanner.NO_READ_MSG), LocationNumber)));
+
+            _sideBarcode = null;
+            _topBarcode = null;
+            
+            Evaluate();
         }
 
         //public bool CheckBarcodeValid(string BcSide, string BcTop, string BcCheck)
@@ -180,7 +206,7 @@ namespace PharmaProject.BusinessLogic.Locations
                 : base.DispatchNormalScript(csdNum);
         }
 
-        private bool _proceed = false;
+        private bool _shouldProceed = false;
 
         public override void DoEvaluate()
         {
@@ -192,7 +218,7 @@ namespace PharmaProject.BusinessLogic.Locations
             switch (csd1.State)
             {
                 case SEGMENT_STATE.OCCUPIED:
-                    if (_proceed)
+                    if (_shouldProceed)
                     {
                         if (csd1.Scripts.DispatchNormalSegmentOccupied.Inactive)
                         {
@@ -203,13 +229,14 @@ namespace PharmaProject.BusinessLogic.Locations
                             }
 
                             csd1.DispatchNormal();
+                            _shouldProceed = false;
                             //WmsCommunicator.Send(BaseMessage.MessageToByteArray(new AufbringenLabel(true, Encoding.ASCII.GetBytes(barcodeSide), LocationNumber)));
                         }
 
                         break;
                     }
 
-                    if (csd2.IsIdle && WaitWmsFeedbackTimedout)
+                    if (csd2.IsIdle && !_shouldProceed)
                     {
                         log.InfoFormat("BOX DISAPPROVED bc:{0}", barcodeSide);
 
@@ -252,8 +279,8 @@ namespace PharmaProject.BusinessLogic.Locations
                     break;
 
                 case FUNCTION_CODES.LABEL_CHECK_RESPONSE:
-                    _proceed = (message as LabelCheckResponse).ShouldProceed;
-                    log.InfoFormat("Received LabelCheckResponse: {0}", _proceed);
+                    _shouldProceed = (message as LabelCheckResponse).ShouldProceed;
+                    log.InfoFormat("Received LabelCheckResponse: {0}", _shouldProceed);
 
                     ReEvaluate.Start();
                     break;            
@@ -263,7 +290,7 @@ namespace PharmaProject.BusinessLogic.Locations
                     var str1 = Encoding.ASCII.GetString(labeldruckErfolgreich.Barcode).TrimEnd(new char[1]);
                     var str2 = Encoding.ASCII.GetString(labeldruckErfolgreich.ComparisonBarcode).TrimEnd(new char[1]);
                     log.InfoFormat("Received Check Code: {0} for Barcode: {1}", str2, str1);
-                    var job1 = s4.Job;
+                    var job1 = printStationSegment.Job;
                 
                     if (str1.Equals(job1?.BarcodeSide))
                     {

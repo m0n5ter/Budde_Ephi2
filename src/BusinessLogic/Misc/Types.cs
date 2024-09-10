@@ -5,6 +5,7 @@
         public string BarcodeSide = string.Empty;
         public string BarcodeTop = string.Empty;
         public string CheckCode = string.Empty;
+        public bool CheckLabelRequestSent = false;
 
         private PrintSegJob(PRINT_SEG_JOB_TYPE job, string barcode)
         {
