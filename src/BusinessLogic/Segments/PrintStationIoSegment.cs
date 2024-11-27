@@ -179,10 +179,10 @@ namespace PharmaProject.BusinessLogic.Segments
                 {
                     DoEvaluate();
                 }
-                catch (Exception ex)
+                catch
                 {
                     evalRunning = false;
-                    throw ex;
+                    throw;
                 }
 
                 lock (EvaluateLock)

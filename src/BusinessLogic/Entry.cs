@@ -99,7 +99,7 @@ namespace PharmaProject
                 case FUNCTION_CODES.IPUNKT_AUSSCHALTEN:
                     if (message.location != 110U)
                         break;
-                    emptyBoxInfeed.StopSequence();
+                    emptyBoxInfeed?.StopSequence();
                     break;
                 case FUNCTION_CODES.ANFORDERUNG_STÖRVEKTOR:
                     WmsCommunicator.Send(BaseMessage.MessageToByteArray(new Störvektor(störvektor)));
